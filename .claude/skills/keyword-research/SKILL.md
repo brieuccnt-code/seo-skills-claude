@@ -12,7 +12,7 @@ Partir de l'offre, du vocabulaire réel des clients (avis, emails, FAQ fournis),
 
 ## 2. Collecte
 - **Keyword Planner** : déposer l'export dans `data/raw/`, puis le normaliser :
-  `python .claude/skills/keyword-research/scripts/kp_clean.py data/raw/<export>.csv -o data/clean/kp_clean.csv --country FR --language fr`
+  `py .claude/skills/keyword-research/scripts/kp_clean.py data/raw/<export>.csv -o data/clean/kp_clean.csv --country FR --language fr`
   Le script gère l'UTF-16, les lignes de titre, les fourchettes (« 1 k – 10 k »), les doublons et signale les quasi-doublons (accents, pluriels).
 - **Search Console** : requêtes avec impressions = demande réelle observée sur le site [Mesuré].
 - **Idées générées** : voir `semantic-keyword-expansion`, toujours marquées [Hypothèse] tant qu'elles ne sont pas mesurées.

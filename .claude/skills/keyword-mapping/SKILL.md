@@ -10,7 +10,7 @@ description: Affecter les clusters de mots-clés à des URL existantes ou à cr�
 2. **Import** des clusters (`keyword-clustering`) et de leurs intentions.
 3. **Affectation** : une URL principale par cluster. Priorité à une URL existante qui a déjà des impressions sur le cluster.
 4. **Conflits** : lancer l'analyse de cannibalisation GSC si un export requête × page existe :
-   `python .claude/skills/seo-measurement/scripts/gsc_analyze.py data/raw/<gsc>.csv -o data/clean/gsc`
+   `py .claude/skills/seo-measurement/scripts/gsc_analyze.py data/raw/<gsc>.csv -o data/clean/gsc`
    puis lire `data/clean/gsc/cannibalisation.csv`.
 5. **Trous et doublons** : clusters sans page, pages sans rôle SEO, pages à fusionner.
 6. **Par URL** : mot-clé principal, secondaires, questions, entités, objectif de conversion.

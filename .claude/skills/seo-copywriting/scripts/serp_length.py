@@ -6,6 +6,9 @@ Sources possibles (une seule) :
   --urls url1 url2 ...                     liste d'URL
   --html-dir dossier                       pages HTML déjà enregistrées (*.html)
 
+--render : charge les pages dans un vrai navigateur (Playwright) pour lire aussi le contenu affiché
+en JavaScript. Plus lent ; nécessite  py -m pip install playwright  et  py -m playwright install chromium.
+
 Extraction : on retire script, style, nav, header, footer, aside, form ; on garde le plus grand
 <article> ou <main> s'il existe, sinon le <body>. C'est une approximation : relire les cas
 aberrants (page bloquée, contenu chargé en JavaScript, page de consentement).
@@ -113,6 +116,35 @@ def analyse(html):
     return p.result()
 
 
+class Renderer:
+    """Charge les pages avec Playwright (option --render)."""
+    def __init__(self, timeout):
+        try:
+            from playwright.sync_api import sync_playwright
+        except ImportError:
+            sys.exit("--render nécessite Playwright : py -m pip install playwright  puis  py -m playwright install chromium")
+        self.pw = sync_playwright().start()
+        self.browser = self.pw.chromium.launch()
+        self.ctx = self.browser.new_context(locale="fr-FR")
+        self.timeout = timeout * 1000
+
+    def fetch(self, url):
+        page = self.ctx.new_page()
+        try:
+            resp = page.goto(url, wait_until="load", timeout=self.timeout)
+            try:
+                page.wait_for_load_state("networkidle", timeout=8000)
+            except Exception:
+                pass
+            return (resp.status if resp else ""), page.content()
+        finally:
+            page.close()
+
+    def close(self):
+        self.browser.close()
+        self.pw.stop()
+
+
 def fetch(url, timeout):
     req = Request(url, headers={"User-Agent": "Mozilla/5.0 (compatible; serp-length-check/1.0)",
                                 "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.5"})
@@ -168,6 +200,7 @@ def main():
     ap.add_argument("--min-words", type=int, default=150,
                     help="en dessous, la page est considérée comme mal extraite et exclue du calcul")
     ap.add_argument("--timeout", type=int, default=15)
+    ap.add_argument("--render", action="store_true", help="lire les pages dans un navigateur (contenu JavaScript)")
     ap.add_argument("-o", "--output", required=True)
     args = ap.parse_args()
 
@@ -184,6 +217,7 @@ def main():
         targets = list(enumerate(files, 1))
 
     excluded = {d.strip().lower().removeprefix("www.") for d in args.exclude_domains.split(",") if d.strip()}
+    renderer = Renderer(max(args.timeout, 30)) if args.render and not args.html_dir else None
     rows = []
     for pos, target in targets:
         status, note = "", ""
@@ -196,15 +230,18 @@ def main():
                 rows.append([pos, target, "exclu", "", "", "", "", "", "domaine exclu"])
                 continue
             try:
-                status, html = fetch(target, args.timeout)
+                status, html = renderer.fetch(target) if renderer else fetch(target, args.timeout)
             except Exception as e:
                 rows.append([pos, target, "erreur", "", "", "", "", "", str(e)[:120]])
                 continue
         m = analyse(html)
         if m["words"] < args.min_words:
-            note = "contenu trop court : extraction probablement ratée (JS, blocage, consentement)"
+            note = ("contenu trop court : extraction probablement ratée (blocage, consentement)" if renderer
+                    else "contenu trop court : extraction probablement ratée (JS, blocage, consentement) — relancer avec --render")
         rows.append([pos, target, status, m["title"], m["h1"], m["words"], m["h2"], m["h3"], note])
 
+    if renderer:
+        renderer.close()
     valid = sorted(r[5] for r in rows if isinstance(r[5], int) and not r[8])
     with open(args.output, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.writer(f)

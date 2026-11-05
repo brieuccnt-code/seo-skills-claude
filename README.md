@@ -5,7 +5,7 @@
 1. Copier ce dossier où tu veux (un dossier par projet client, ou un dossier « atelier » commun).
 2. Ouvrir un terminal dans ce dossier et lancer `claude`.
 3. `CLAUDE.md` est chargé automatiquement (rôle, socle, conventions) ; les skills de `.claude/skills/` sont détectées toutes seules. Taper `/` dans Claude Code pour les voir.
-4. Python 3.9+ suffit pour les scripts (aucune bibliothèque à installer).
+4. Python 3.9+ pour les scripts (commande `py` sous Windows). Optionnel : Playwright pour les captures et les sites en JavaScript : `py -m pip install playwright` puis `py -m playwright install chromium`.
 
 ## Utilisation
 - Dépose tes exports dans `data/raw/` (voir `references/DATA-SOURCES.md` pour savoir quoi exporter).
@@ -31,7 +31,8 @@
 | `keyword-research/scripts/kp_clean.py` | export Keyword Planner (FR/EN, UTF-16) | base normalisée, fourchettes, quasi-doublons, saisonnalité |
 | `keyword-clustering/scripts/serp_cluster.py` | top 10 SERP par requête (+ volumes) | clusters par recouvrement d'URL, cas limites |
 | `seo-measurement/scripts/gsc_analyze.py` | export GSC requête × page (+ période précédente) | quick wins, CTR faibles, cannibalisation, évolution |
-| `seo-copywriting/scripts/serp_length.py` | URL du top 10 (fichier SERP, liste ou pages HTML) | longueur du contenu principal par page, fourchette recommandée |
+| `seo-copywriting/scripts/serp_length.py` | URL du top 10 (fichier SERP, liste ou pages HTML) | longueur du contenu principal par page, fourchette recommandée (`--render` pour les pages en JavaScript) |
+| `ux-cro/scripts/ux_snapshot.py` (Playwright) | une ou plusieurs URL | captures desktop/mobile, contrôles UX automatiques, comparaison avant/après (`--baseline`) |
 | `cocon-semantique/scripts/link_graph.py` | export des liens internes (+ carte du cocon) | orphelines, profondeur, liens obligatoires manquants, liens hors cocon, ancres répétées |
 
 ## Démarrer un projet

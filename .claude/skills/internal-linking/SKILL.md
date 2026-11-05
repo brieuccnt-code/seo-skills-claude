@@ -8,7 +8,7 @@ description: Planifier ou auditer le maillage interne. À utiliser pour trouver 
 ## Procédure
 1. Base : mapping des mots-clés et architecture (piliers, pages business, guides).
 2. Si un export de liens internes existe, lancer l'analyse de graphe (sans carte de cocon) :
-   `python .claude/skills/cocon-semantique/scripts/link_graph.py --links data/raw/<inlinks>.csv --home https://exemple.com/ -o data/clean/links`
+   `py .claude/skills/cocon-semantique/scripts/link_graph.py --links data/raw/<inlinks>.csv --home https://exemple.com/ -o data/clean/links`
    → liens entrants par page, profondeur, orphelines, ancres répétées.
 3. **Pages à pousser** : pages business et pages en position 4–20 dans GSC (sortie `gains_rapides_position.csv` de `gsc_analyze.py`).
 4. **Pages sources** : pages du même thème avec le plus de clics ou de liens entrants.

@@ -19,7 +19,7 @@ Lire d'abord `references/COCON-SEMANTIQUE.md` (vocabulaire, règles de maillage,
 ## Auditer un cocon existant
 1. Fichiers : carte du cocon (`cocon-map.csv`) + export des liens internes du crawl (`source,destination,anchor`, idéalement avec `link_position`).
 2. Lancer :
-   `python .claude/skills/cocon-semantique/scripts/link_graph.py --links data/raw/<inlinks>.csv --cocon deliverables/<cocon-map>.csv --home https://exemple.com/ -o data/clean/cocon-audit`
+   `py .claude/skills/cocon-semantique/scripts/link_graph.py --links data/raw/<inlinks>.csv --cocon deliverables/<cocon-map>.csv --home https://exemple.com/ -o data/clean/cocon-audit`
 3. Lire les fichiers produits :
    - `liens_manquants.csv` : liens obligatoires absents ;
    - `liens_sortants_hors_cocon.csv` : liens de contenu vers d'autres cocons ;

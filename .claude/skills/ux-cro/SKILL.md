@@ -32,7 +32,11 @@ Objectif, cible, intention de recherche, **conversion principale**, maturité du
 Conversions possibles : devis, rendez-vous, appel, achat, inscription, contact, téléchargement, **clic affilié, inscription newsletter, réservation via un partenaire**, ou toute action définie par le site.
 
 ### Étape 2 : se donner les moyens de voir
-Lire le HTML (fichier ou URL) ne montre pas le rendu. Demander des **captures desktop et mobile** (premier écran et page entière) si elles n'ont pas été fournies, ainsi que les données disponibles. Ce qui n'a pas été vu n'est pas audité : le dire.
+Lire le HTML brut ne montre ni le rendu ni le contenu chargé en JavaScript. Si Playwright est installé, lancer :
+`py .claude/skills/ux-cro/scripts/ux_snapshot.py <url1> [<url2>…] -o data/clean/ux/AAAA-MM-JJ`
+→ captures desktop et mobile (premier écran et page entière) et contrôles automatiques : débordement horizontal, zones tactiles < 24px, images sans dimensions, image du premier écran en lazy-loading, texte trop petit, H1, plan des Hn, liens internes, mots du contenu rendu, LCP et CLS de laboratoire. **Regarder les captures** (outil de lecture d'image) avant de conclure : les contrôles ne remplacent pas l'analyse.
+Sinon, demander des captures desktop et mobile. Ce qui n'a pas été vu n'est pas audité : le dire.
+Les LCP/CLS du script sont des mesures de laboratoire (indicatives) ; les données terrain de Search Console ou PageSpeed Insights font foi.
 
 ### Étape 3 : prioriser les pages
 Sur un site, commencer par les pages à fort trafic organique qui convertissent mal : `pages.csv` de `gsc_analyze.py` (skill `seo-measurement`) croisé avec les conversions par page si analytics est fourni. Une page à 10 visites par mois passe après.
@@ -80,7 +84,7 @@ Interdits : conseils vagues (« améliorer l'UX », « moderniser », « optimis
 1. Analyser l'existant (HTML, CSS, structure, conventions) avant de modifier.
 2. Lister les éléments SEO à conserver (Hn, contenu, liens, balises, données structurées).
 3. Modifications ciblées, pas de réécriture globale ; code propre, léger, compatible avec l'existant et le responsive.
-4. Après modification : accessibilité, performances, liens et interactions, et absence de régression SEO (comparer Hn, liens internes et texte avant/après).
+4. Après modification : accessibilité, performances, liens et interactions, et absence de régression SEO. Avec Playwright : relevé **avant** toute modification, puis relevé après avec `--baseline <dossier avant>` → titres, liens internes et contenu perdus sont signalés.
 5. Toute modification d'URL, de canonical, de robots ou de masse suit la validation de `references/SEO-CORE.md` § 8.
 
 ## 9. Livrable

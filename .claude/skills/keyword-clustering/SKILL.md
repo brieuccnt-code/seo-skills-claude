@@ -10,7 +10,7 @@ Principe : deux requêtes vont sur la même page si Google les traite comme le m
 ## Avec des SERP (méthode préférée)
 1. Fichier attendu dans `data/raw/` : `keyword,position,url` (top 10 par requête), daté et localisé. Optionnel : volumes (`keyword,avg_monthly_searches` ou `volume_high`, ex. sortie de `kp_clean.py`). Sorties dans `data/clean/clusters/` : `clusters.csv`, `clusters_resume.csv`, `cas_limites.csv`.
 2. Lancer :
-   `python .claude/skills/keyword-clustering/scripts/serp_cluster.py data/raw/<serp>.csv --volumes data/clean/kp_clean.csv --threshold 3 -o data/clean/clusters`
+   `py .claude/skills/keyword-clustering/scripts/serp_cluster.py data/raw/<serp>.csv --volumes data/clean/kp_clean.csv --threshold 3 -o data/clean/clusters`
 3. Le script crée les clusters à partir de la requête la plus volumineuse (pivot) et y rattache les requêtes partageant au moins `threshold` URL avec le pivot. Il produit aussi la liste des **cas limites** (recouvrement = seuil − 1) à arbitrer.
 4. Relire chaque cluster : un pivot informationnel avec des requêtes transactionnelles = à scinder.
 Seuils et arbitrages : `references/HEURISTIQUES.md`.

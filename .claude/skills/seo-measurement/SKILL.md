@@ -8,7 +8,7 @@ description: Analyser les données Google Search Console (et analytics si fourni
 ## Analyse automatique d'un export GSC
 Fichier attendu : export requête × page (`query,page,clicks,impressions,ctr,position`). Accepte aussi les en-têtes français de GSC.
 ```
-python .claude/skills/seo-measurement/scripts/gsc_analyze.py data/raw/<periode_actuelle>.csv \
+py .claude/skills/seo-measurement/scripts/gsc_analyze.py data/raw/<periode_actuelle>.csv \
   [--previous data/raw/<periode_precedente>.csv] [--min-impressions 50] -o data/clean/gsc
 ```
 Fichiers produits :

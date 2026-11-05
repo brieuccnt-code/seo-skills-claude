@@ -68,8 +68,8 @@ Jamais de longueur standard. Elle dépend de l'intention, de la complexité, du 
 **Méthode chiffrée** (seuils dans `references/HEURISTIQUES.md` § Longueur) :
 1. Lister les URL du top 10 organique pour le mot-clé principal (fichier SERP, ou relevé fourni).
 2. Mesurer le contenu principal de chaque page :
-   `python .claude/skills/seo-copywriting/scripts/serp_length.py --serp data/raw/<serp>.csv --keyword "<mot-clé>" -o data/clean/longueur.csv`
-   (ou `--urls url1 url2…`, ou `--html-dir` pour des pages enregistrées).
+   `py .claude/skills/seo-copywriting/scripts/serp_length.py --serp data/raw/<serp>.csv --keyword "<mot-clé>" -o data/clean/longueur.csv`
+   (ou `--urls url1 url2…`, ou `--html-dir` pour des pages enregistrées ; ajouter `--render` si des pages sont signalées « extraction ratée » et que Playwright est installé : il lit le contenu chargé en JavaScript).
 3. Ne garder que les pages **du même format** que la page à produire (exclure forums, vidéos, fiches produits si on écrit un guide…).
 4. Recommandation = fourchette autour de la médiane des pages comparables (P25–P75), ajustée selon la couverture de sous-thèmes prévue au plan.
 5. Livrer : `Longueur recommandée : X–Y mots [Estimé — médiane de N pages du top 10, relevé du JJ/MM/AAAA]`.

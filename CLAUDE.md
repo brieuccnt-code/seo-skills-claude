@@ -24,7 +24,8 @@ templates/       modèles de livrables
 - Lancer Claude Code depuis la racine de ce dossier.
 - Un fichier source n'est jamais écrasé : on écrit une nouvelle version dans `data/clean/` ou `deliverables/`.
 - Nommer les livrables `AAAA-MM-JJ_projet_type.ext` (ex. `2026-11-05_albanie_keyword-map.csv`).
-- Les scripts n'utilisent que la bibliothèque standard Python 3.9+. Les lancer avec `python <chemin> --help` pour voir les options.
+- Les scripts utilisent Python 3.9+. Sous Windows, la commande est `py` (ex. `py <chemin> --help` pour voir les options) ; ailleurs `python3`.
+- Seuls `ux_snapshot.py` et l'option `--render` de `serp_length.py` ont besoin de **Playwright** (`py -m pip install playwright` puis `py -m playwright install chromium`). S'il n'est pas installé, le dire et travailler sans (captures fournies par l'utilisateur).
 
 ## Façon de travailler
 
