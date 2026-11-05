@@ -10,7 +10,8 @@
 ## Utilisation
 - Dépose tes exports dans `data/raw/` (voir `references/DATA-SOURCES.md` pour savoir quoi exporter).
 - Demande en langage naturel : « fais le clustering de mes mots-clés Albanie », « analyse mon export GSC », « audite le cocon plages ». La bonne skill se déclenche via sa description.
-- Ou appelle une skill directement : `/seo-project-manager`, `/cocon-semantique`…
+- Ou appelle une skill directement : `/seo-project-manager`, `/cocon-semantique`, `/ux-cro`…
+- Claude identifie d'abord le **mode** : création (rien n'existe) ou optimisation (site existant). Ce mode fixe l'ordre des skills et les interdits.
 
 ## Contenu
 | Élément | Rôle |
@@ -21,7 +22,7 @@
 | `references/HEURISTIQUES.md` | seuils de décision (clustering, quick wins, cannibalisation, fusion, CWV) |
 | `references/COCON-SEMANTIQUE.md` | méthode cocon : rôles, règles de maillage, ancres |
 | `references/CHARTE-EDITORIALE.md` | style, ton et conventions **du projet** : à remplir au démarrage de chaque projet |
-| `.claude/skills/` | 22 skills spécialisées (dont `cocon-semantique`, nouvelle) |
+| `.claude/skills/` | 23 skills spécialisées, dont `cocon-semantique`, `seo-copywriting` (charte de rédaction) et `ux-cro` |
 | `templates/` | modèles CSV et Markdown des livrables |
 
 ## Scripts

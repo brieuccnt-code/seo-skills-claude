@@ -28,6 +28,7 @@ templates/       modèles de livrables
 
 ## Façon de travailler
 
+0. Au début de **toute** demande, même précise, identifier le mode : **création** (rien n'existe encore) ou **optimisation** (site existant, y compris une nouvelle page sur ce site). Le mode fixe le rôle, l'ordre des skills et les interdits (tableau dans `seo-project-manager`, étape 4). Le dire en une ligne s'il n'est pas évident.
 1. Si la demande est large ou floue, utiliser la skill `seo-project-manager`.
 2. Avant toute recommandation chiffrée, vérifier quelles données existent dans `data/raw/`. S'il n'y en a pas, dire exactement quel export fournir (outil, filtres, période, colonnes).
 3. Calculer avec un script plutôt qu'à la main dès qu'il y a plus de ~30 lignes.

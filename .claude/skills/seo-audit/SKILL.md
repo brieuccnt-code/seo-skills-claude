@@ -20,6 +20,7 @@ Lancer `gsc_analyze.py` (skill `seo-measurement`) si un export GSC est disponibl
 5. **Qualité** : utilité, originalité, preuves, fraîcheur pertinente, pages faibles en nombre.
 6. **Données structurées** (via `structured-data`).
 7. **Performance et mobile** : données terrain d'abord.
+7 bis. **UX et conversion** des pages à fort trafic : skill `ux-cro` (sans dégrader le SEO).
 8. **Spécifique** : local, e-commerce, international selon le type.
 9. **Mesure** : GSC configuré, conversions suivies.
 
