@@ -1,0 +1,15 @@
+{
+  "name": "seo-skills-claude",
+  "owner": {
+    "name": "brieuccnt-code"
+  },
+  "description": "Pack SEO expert pour Claude Code (skills + scripts).",
+  "plugins": [
+    {
+      "name": "seo-expert",
+      "source": "./",
+      "description": "Consultant SEO senior : stratégie, rédaction, UX/CRO, audits avec compte rendu ✅ / ❌, sites éditoriaux.",
+      "version": "1.0.0"
+    }
+  ]
+}

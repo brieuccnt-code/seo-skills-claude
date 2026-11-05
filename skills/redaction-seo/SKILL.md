@@ -149,9 +149,9 @@ Corriger avant de livrer. Verdict final : prêt, prêt après corrections (liste
 10. Toujours privilégier l'intention de recherche et la valeur pour le lecteur.
 
 ## 15. Outils dans le terminal (Claude Code)
-Quand Claude Code est lancé depuis la racine du pack :
-- **Charte éditoriale** : lire `references/CHARTE-EDITORIALE.md` avant toute rédaction ; ne demander que ce qui y manque, et proposer de la compléter avec les réponses.
-- **Brief** : modèle `templates/content-brief.md`.
-- **Longueur (§ 5)** : `py .claude/skills/redaction-seo/scripts/serp_length.py --serp data/raw/<serp>.csv --keyword "<mot-clé>" -o data/clean/longueur.csv` (ou `--urls url1 url2…`, ou `--html-dir` pour des pages enregistrées). Ajouter `--render` si des pages sont signalées « extraction ratée » et que Playwright est installé : il lit le contenu chargé en JavaScript. `--exclude-domains` écarte les formats différents (forums, vidéos).
+Dans Claude Code (scripts dans le plugin, fichiers du projet dans le dossier où Claude Code est lancé) :
+- **Charte éditoriale** : lire `references/CHARTE-EDITORIALE.md` du dossier du projet avant toute rédaction (s'il n'existe pas, le créer à partir de `${CLAUDE_PLUGIN_ROOT}/references/CHARTE-EDITORIALE.md`) ; ne demander que ce qui y manque, et proposer de la compléter avec les réponses.
+- **Brief** : modèle `${CLAUDE_PLUGIN_ROOT}/templates/content-brief.md`.
+- **Longueur (§ 5)** : `py "${CLAUDE_PLUGIN_ROOT}/skills/redaction-seo/scripts/serp_length.py" --serp data/raw/<serp>.csv --keyword "<mot-clé>" -o data/clean/longueur.csv` (ou `--urls url1 url2…`, ou `--html-dir` pour des pages enregistrées). Ajouter `--render` si des pages sont signalées « extraction ratée » et que Playwright est installé : il lit le contenu chargé en JavaScript. `--exclude-domains` écarte les formats différents (forums, vidéos).
 - **Livrable** : `deliverables/AAAA-MM-JJ_<projet>_<slug>.md`.
-- **Compte rendu d'un audit de contenu** : même procédure que dans `seo-strategie` (`templates/compte-rendu.json` → `rapport.py` → HTML).
+- **Compte rendu d'un audit de contenu** : même procédure que dans `seo-strategie` (`${CLAUDE_PLUGIN_ROOT}/templates/compte-rendu.json` → `rapport.py` → HTML).

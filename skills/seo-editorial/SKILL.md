@@ -76,4 +76,4 @@ Pour l'audit d'une page ou d'un site existant, rendre un compte rendu en deux pa
 Sources de référence : Google Search Central (politiques anti-spam ; qualifier les liens sortants ; rédiger des avis de qualité ; fonctionnalités IA et votre site web) ; Légifrance (LCEN art. 20 ; loi n° 2023-451 ; ordonnance n° 2024-978).
 
 ## 8. Outils dans le terminal (Claude Code)
-Pour la saisonnalité (§ 5) : `kp_clean.py` (skill `seo-strategie`) calcule le mois de pic et un indice de saisonnalité à partir d'un export Keyword Planner avec volumes mensuels ; `gsc_analyze.py` compare deux périodes de Search Console. Livrable du calendrier dans `deliverables/`. Compte rendu HTML : `templates/compte-rendu.json` → `rapport.py` (skill `seo-strategie`).
+Pour la saisonnalité (§ 5) : `kp_clean.py` (skill `seo-strategie`) calcule le mois de pic et un indice de saisonnalité à partir d'un export Keyword Planner avec volumes mensuels ; `gsc_analyze.py` compare deux périodes de Search Console. Livrable du calendrier dans `deliverables/`. Compte rendu HTML : `${CLAUDE_PLUGIN_ROOT}/templates/compte-rendu.json` → `rapport.py` (skill `seo-strategie`).
