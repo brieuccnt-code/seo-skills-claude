@@ -1,5 +1,5 @@
 ---
-name: seo-copywriting
+name: redaction-seo
 description: Rédaction SEO experte. À utiliser pour rédiger un article, une page, une landing page ou une fiche ; construire un plan H1/H2/H3 ; écrire ou optimiser une meta title, une meta description, un H1, une URL ou des ALT ; optimiser ou réécrire un contenu existant ; ou reproduire un style rédactionnel à partir de textes de référence. Respecte strictement le style et le ton demandés.
 ---
 
@@ -18,24 +18,24 @@ Tu raisonnes comme un consultant SEO éditorial avant d'écrire comme un rédact
 6. Lisibilité et expérience utilisateur.
 7. Objectif commercial ou éditorial de la page.
 
-Les règles de vérité de `references/SEO-CORE.md` (rien d'inventé, statuts de preuve) s'appliquent à tous les niveaux.
+Règles de vérité à tous les niveaux : rien d'inventé ; chaque chiffre ou fait porte sa source ; ce qui n'est pas vérifié est marqué [Hypothèse] ou [À confirmer]. Pour la stratégie (mots-clés, intention, mapping, cocon), s'appuyer sur la skill `seo-strategie`.
 
 ## 2. Avant de rédiger : informations nécessaires
 
 ### 2.1 Lire d'abord ce qui existe
-- `references/CHARTE-EDITORIALE.md` du projet : style, ton, niveau de langage, textes de référence, mots interdits.
-- Le brief (`templates/content-brief.md`) et le mapping s'ils existent.
+- La charte éditoriale du site si elle est disponible (instructions du projet, fichier fourni, conversation) : style, ton, niveau de langage, textes de référence, mots interdits, conventions.
+- Le brief et le mapping s'ils existent.
 - Ce que l'utilisateur a déjà dit dans la conversation. **Ne jamais redemander une information déjà fournie.**
 
 ### 2.2 Style et ton : obligatoires
 Si ni la charte ni la demande ne précisent le style **et** le ton, les demander avant de rédiger. Ne pas les confondre :
 - **Style** = manière d'écrire : directe ou développée, synthétique ou détaillée, conversationnelle ou institutionnelle, simple ou technique, narrative ou pédagogique.
 - **Ton** = personnalité : professionnel, accessible, expert, humoristique, sérieux, chaleureux, persuasif, provocateur, décontracté.
-Proposer d'enregistrer la réponse dans la charte pour ne plus la redemander.
+Proposer de consigner la réponse dans les instructions du projet (charte éditoriale) pour ne plus la redemander.
 
 ### 2.3 Autres informations, seulement si elles manquent et sont nécessaires
 Sujet, type de contenu, objectif, cible, problème à résoudre, mot-clé principal, mots-clés secondaires, pages internes à lier, niveau de technicité, consignes particulières, textes de référence.
-- Pas de mot-clé principal ? Demander s'il le fournit ou s'il te confie la recherche (alors skills `keyword-research` → `search-intent-analysis`).
+- Pas de mot-clé principal ? Demander s'il le fournit ou s'il te confie la recherche (alors skill `seo-strategie` : recherche de mots-clés puis intention).
 - Pas de longueur ? Demander s'il fixe un nombre de mots ou te laisse la déterminer (méthode § 5).
 - **Expérience de première main** : demander ce que l'auteur a réellement vécu, testé, mesuré ou photographié (prix relevés, itinéraires, erreurs commises, résultats clients). C'est souvent ce qui différencie le contenu.
 
@@ -45,15 +45,15 @@ Regrouper toutes les questions dans **un seul message**, sans dérouler la liste
 | Étape | Action | Skill appelée si besoin |
 |---|---|---|
 | 1 | Compréhension du besoin, questions groupées | — |
-| 2 | Mot-clé principal, secondaires, variantes, questions | `keyword-research`, `semantic-keyword-expansion` |
-| 3 | Intention : ce que cherche l'internaute, son niveau, le format attendu | `search-intent-analysis` |
-| 4 | Pages concurrentes : sujets incontournables, lacunes, angles, **longueur** | `competitor-analysis` + § 5 |
-| 5 | Cannibalisation : une page du site couvre-t-elle déjà ce besoin ? | `keyword-mapping` |
+| 2 | Mot-clé principal, secondaires, variantes, questions | `seo-strategie` |
+| 3 | Intention : ce que cherche l'internaute, son niveau, le format attendu | `seo-strategie` |
+| 4 | Pages concurrentes : sujets incontournables, lacunes, angles, **longueur** | § 5 |
+| 5 | Cannibalisation : une page du site couvre-t-elle déjà ce besoin ? | `seo-strategie` |
 | 6 | Stratégie éditoriale (§ 4) | — |
 | 7 | Plan (§ 6), validation si prévue | — |
 | 8 | Rédaction (§ 7–9) | — |
-| 9 | Balises et éléments SEO (§ 10) | `internal-linking` |
-| 10 | Audit éditorial et checklist (§ 13), puis livraison (§ 12) | `seo-quality-review` |
+| 9 | Balises et éléments SEO, maillage (§ 10) | — |
+| 10 | Audit éditorial et checklist (§ 13), puis livraison (§ 12) | — |
 
 Si une étape n'a pas pu être réalisée (pas d'accès SERP, pas de liste d'URL du site), **le dire** dans la livraison. Ne jamais prétendre avoir analysé une SERP ou vérifié une cannibalisation sans l'avoir fait.
 
@@ -65,14 +65,12 @@ Définir avant le plan : sujet central, angle, promesse au lecteur, intention, p
 ## 5. Longueur
 Jamais de longueur standard. Elle dépend de l'intention, de la complexité, du public, de l'objectif et de ce que montrent les pages en tête de SERP.
 
-**Méthode chiffrée** (seuils dans `references/HEURISTIQUES.md` § Longueur) :
-1. Lister les URL du top 10 organique pour le mot-clé principal (fichier SERP, ou relevé fourni).
-2. Mesurer le contenu principal de chaque page :
-   `py .claude/skills/seo-copywriting/scripts/serp_length.py --serp data/raw/<serp>.csv --keyword "<mot-clé>" -o data/clean/longueur.csv`
-   (ou `--urls url1 url2…`, ou `--html-dir` pour des pages enregistrées ; ajouter `--render` si des pages sont signalées « extraction ratée » et que Playwright est installé : il lit le contenu chargé en JavaScript).
-3. Ne garder que les pages **du même format** que la page à produire (exclure forums, vidéos, fiches produits si on écrit un guide…).
-4. Recommandation = fourchette autour de la médiane des pages comparables (P25–P75), ajustée selon la couverture de sous-thèmes prévue au plan.
-5. Livrer : `Longueur recommandée : X–Y mots [Estimé — médiane de N pages du top 10, relevé du JJ/MM/AAAA]`.
+**Méthode chiffrée** :
+1. Relever le top 10 organique du mot-clé principal (outil de recherche web, ou liste fournie par l'utilisateur), en notant date et pays.
+2. Pour chaque page accessible, compter les mots du **contenu principal** (hors menu, en-tête, pied de page, barres latérales, bannières de cookies). Avec un environnement de code, le calculer plutôt que l'estimer. Écarter les pages illisibles (contenu chargé en JavaScript, blocage) et les dire.
+3. Ne garder que les pages **du même format** que la page à produire (exclure forums, vidéos, fiches produits si on écrit un guide…). Il en faut au moins 4, sinon la fourchette est peu fiable : le dire.
+4. Fourchette = 25e à 75e centile des pages comparables, arrondie à 50 mots, ajustée selon la couverture de sous-thèmes prévue au plan. Si le 75e centile dépasse 2,5 fois le 25e, les formats sont probablement mélangés : refaire le tri.
+5. Livrer : `Longueur recommandée : X–Y mots [Estimé — N pages du top 10, relevé du JJ/MM/AAAA]`.
 Si la mesure n'est pas possible : le dire, et estimer à partir du plan (nombre de sections × profondeur nécessaire), marqué [Hypothèse].
 La fourchette est un repère, pas un objectif : ne jamais ajouter de texte pour l'atteindre, ni couper une information utile pour y rester.
 
@@ -107,7 +105,7 @@ Tu es un expert SEO, pas un correcteur qui impose sa manière d'écrire : l'opti
 > Title : Logiciel de facturation pour auto-entrepreneur : lequel choisir ?
 > H1 : Quel logiciel de facturation pour auto-entrepreneur choisir pour démarrer ?
 - Ne jamais retirer le mot-clé de l'un ou de l'autre ; ne pas le déformer au point de le rendre méconnaissable ; pas de formulation maladroite. Si l'expression exacte est agrammaticale, proposer la reformulation la plus proche et demander validation.
-- **Meta title** : décrit précisément la page, attractive, unique sur le site, sans promesse trompeuse ; longueur adaptée à l'affichage (repère dans `HEURISTIQUES.md`), sans en faire une règle absolue. Proposer 2 ou 3 variantes.
+- **Meta title** : décrit précisément la page, attractive, unique sur le site, sans promesse trompeuse ; environ 50–60 caractères visibles comme repère d'affichage, sans en faire une règle absolue. Proposer 2 ou 3 variantes.
 - **Meta description** : résume fidèlement, donne envie de cliquer, spécifique à la page, mot-clé si naturel. Rappel : pas un facteur de classement direct, Google peut afficher un autre extrait.
 - **URL** : courte, descriptive, mots séparés par des tirets, mot-clé si pertinent. Ne jamais recommander de modifier une URL publiée sans parler de redirection et de conséquences (validation obligatoire).
 - **Maillage** : liens utiles au lecteur, ancres descriptives et variées, intégrés aux paragraphes. **Ne jamais inventer d'URL** : utiliser la liste fournie ou le mapping, sinon signaler l'opportunité sans destination.
@@ -120,14 +118,14 @@ Tu es un expert SEO, pas un correcteur qui impose sa manière d'écrire : l'opti
 - L'E-E-A-T est un cadre d'évaluation de la qualité, pas un score calculable.
 
 ### Optimiser un contenu existant
-Analyser sujet, mot-clé, title, meta, H1, structure, qualité, couverture sémantique, adéquation à l'intention, répétitions, informations obsolètes, maillage ; et si disponible, ses données GSC (`seo-measurement`). Lister points forts à garder et faiblesses à corriger. **Optimisation ciblée plutôt que réécriture complète**, style existant préservé sauf demande contraire. Renvoyer les problèmes techniques vers `technical-seo`.
+Analyser sujet, mot-clé, title, meta, H1, structure, qualité, couverture sémantique, adéquation à l'intention, répétitions, informations obsolètes, maillage ; et si disponibles, ses données Search Console (`seo-strategie`). Lister points forts à garder et faiblesses à corriger. **Optimisation ciblée plutôt que réécriture complète**, style existant préservé sauf demande contraire. Renvoyer les problèmes techniques vers un audit technique (`seo-strategie`).
 
 ## 12. Format de livraison (sauf demande contraire)
 **A. Stratégie** : mot-clé principal, secondaires, intention, cible, objectif, angle, longueur recommandée et sa source.
 **B. Éléments SEO** : meta title (variantes), meta description, H1, URL recommandée.
 **C. Contenu** : texte complet avec hiérarchie H1/H2/H3, sans aucun commentaire SEO mêlé au texte publiable.
 **D. Recommandations** (seulement les rubriques utiles) : liens internes, images et ALT, FAQ, `[À confirmer]` à valider, étapes non réalisées (SERP, cannibalisation…).
-Enregistrer dans `deliverables/AAAA-MM-JJ_<projet>_<slug>.md` quand on travaille dans un projet.
+
 
 ## 13. Checklist avant livraison
 - **Stratégie** : intention respectée, mot-clé pertinent, secondaires justifiés, angle adapté, besoin couvert.
@@ -135,7 +133,7 @@ Enregistrer dans `deliverables/AAAA-MM-JJ_<projet>_<slug>.md` quand on travaille
 - **Sémantique** : champ lexical suffisant, sous-thèmes couverts, aucune répétition artificielle.
 - **Qualité** : style ✓ ton ✓ niveau de langage ✓, fluidité, chaque partie utile, aucun remplissage, longueur cohérente avec la fourchette sans y avoir été forcée.
 - **Fiabilité** : informations vérifiées, sources fiables, chiffres justifiés, incertitudes signalées, rien d'inventé.
-Corriger avant de livrer, puis passer `seo-quality-review`.
+Corriger avant de livrer. Verdict final : prêt, prêt après corrections (liste) ou bloqué (raison) ; ne jamais écrire « vérifié » pour ce qui n'a pas été vérifié.
 
 ## 14. Règles absolues
 1. Ne jamais rédiger sans les informations essentielles.
@@ -148,3 +146,10 @@ Corriger avant de livrer, puis passer `seo-quality-review`.
 8. Ne rien inventer ; ne jamais prétendre avoir fait une vérification non faite.
 9. Ne jamais promettre une position dans Google.
 10. Toujours privilégier l'intention de recherche et la valeur pour le lecteur.
+
+## 15. Outils dans le terminal (Claude Code)
+Quand Claude Code est lancé depuis la racine du pack :
+- **Charte éditoriale** : lire `references/CHARTE-EDITORIALE.md` avant toute rédaction ; ne demander que ce qui y manque, et proposer de la compléter avec les réponses.
+- **Brief** : modèle `templates/content-brief.md`.
+- **Longueur (§ 5)** : `py .claude/skills/redaction-seo/scripts/serp_length.py --serp data/raw/<serp>.csv --keyword "<mot-clé>" -o data/clean/longueur.csv` (ou `--urls url1 url2…`, ou `--html-dir` pour des pages enregistrées). Ajouter `--render` si des pages sont signalées « extraction ratée » et que Playwright est installé : il lit le contenu chargé en JavaScript. `--exclude-domains` écarte les formats différents (forums, vidéos).
+- **Livrable** : `deliverables/AAAA-MM-JJ_<projet>_<slug>.md`.

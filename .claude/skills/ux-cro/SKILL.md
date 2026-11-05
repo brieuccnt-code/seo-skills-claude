@@ -20,7 +20,7 @@ Tu raisonnes comme un consultant UX/CRO senior : tu identifies un problème pré
 - **Structure** : hiérarchie Hn respectée ; pas de titres ajoutés pour l'esthétique.
 - **Maillage** : aucun lien interne pertinent supprimé, masqué ou rendu moins accessible ; ancres cohérentes ; URL inchangées.
 - **Indexabilité** : contenu accessible dans le HTML rendu. Accordéons et onglets acceptés si le contenu est présent dans le DOM sans action de l'utilisateur. Pas de composant JavaScript qui bloque l'accès au contenu. ALT conservés, HTML sémantique.
-- **Performance** : seuils Core Web Vitals de `references/HEURISTIQUES.md`. Pas de script, animation ou bibliothèque ajoutée sans bénéfice proportionné ; dimensions d'image déclarées (CLS) ; pas de lazy-loading sur l'image principale du premier écran ; pas d'interstitiel intrusif.
+- **Performance** : Core Web Vitals « bons » au 75e centile des données terrain : LCP ≤ 2,5 s, INP ≤ 200 ms, CLS ≤ 0,1. Pas de script, animation ou bibliothèque ajoutée sans bénéfice proportionné ; dimensions d'image déclarées (CLS) ; pas de lazy-loading sur l'image principale du premier écran ; pas d'interstitiel intrusif.
 
 **Conserver plutôt que supprimer** : restructurer en blocs, encadrés, listes, sommaire cliquable, accordéons accessibles, visuels qui complètent le texte sans le remplacer.
 
@@ -32,14 +32,10 @@ Objectif, cible, intention de recherche, **conversion principale**, maturité du
 Conversions possibles : devis, rendez-vous, appel, achat, inscription, contact, téléchargement, **clic affilié, inscription newsletter, réservation via un partenaire**, ou toute action définie par le site.
 
 ### Étape 2 : se donner les moyens de voir
-Lire le HTML brut ne montre ni le rendu ni le contenu chargé en JavaScript. Si Playwright est installé, lancer :
-`py .claude/skills/ux-cro/scripts/ux_snapshot.py <url1> [<url2>…] -o data/clean/ux/AAAA-MM-JJ`
-→ captures desktop et mobile (premier écran et page entière) et contrôles automatiques : débordement horizontal, zones tactiles < 24px, images sans dimensions, image du premier écran en lazy-loading, texte trop petit, H1, plan des Hn, liens internes, mots du contenu rendu, LCP et CLS de laboratoire. **Regarder les captures** (outil de lecture d'image) avant de conclure : les contrôles ne remplacent pas l'analyse.
-Sinon, demander des captures desktop et mobile. Ce qui n'a pas été vu n'est pas audité : le dire.
-Les LCP/CLS du script sont des mesures de laboratoire (indicatives) ; les données terrain de Search Console ou PageSpeed Insights font foi.
+Lire le HTML ou une description ne montre pas le rendu. Demander des **captures desktop et mobile** (premier écran et page entière) si elles n'ont pas été fournies, et les regarder avant de conclure. Si un outil de navigation est disponible, ouvrir la page en desktop et en mobile. Ce qui n'a pas été vu n'est pas audité : le dire. Les mesures de performance de laboratoire sont indicatives ; les données terrain de Search Console ou PageSpeed Insights font foi.
 
 ### Étape 3 : prioriser les pages
-Sur un site, commencer par les pages à fort trafic organique qui convertissent mal : `pages.csv` de `gsc_analyze.py` (skill `seo-measurement`) croisé avec les conversions par page si analytics est fourni. Une page à 10 visites par mois passe après.
+Sur un site, commencer par les pages à fort trafic organique qui convertissent mal : les pages de Search Console (clics, impressions) croisées avec les conversions par page si analytics est fourni. Une page à 10 visites par mois passe après.
 
 ### Étape 4 : auditer l'expérience
 - **Ergonomie** (heuristiques de Nielsen) : simplicité, cohérence, prévisibilité, feedback, tolérance aux erreurs.
@@ -84,8 +80,22 @@ Interdits : conseils vagues (« améliorer l'UX », « moderniser », « optimis
 1. Analyser l'existant (HTML, CSS, structure, conventions) avant de modifier.
 2. Lister les éléments SEO à conserver (Hn, contenu, liens, balises, données structurées).
 3. Modifications ciblées, pas de réécriture globale ; code propre, léger, compatible avec l'existant et le responsive.
-4. Après modification : accessibilité, performances, liens et interactions, et absence de régression SEO. Avec Playwright : relevé **avant** toute modification, puis relevé après avec `--baseline <dossier avant>` → titres, liens internes et contenu perdus sont signalés.
-5. Toute modification d'URL, de canonical, de robots ou de masse suit la validation de `references/SEO-CORE.md` § 8.
+4. Après modification : accessibilité, performances, liens et interactions, et absence de régression SEO. Relever avant toute modification la liste des Hn, des liens internes et le nombre de mots, puis comparer après : rien d'important ne doit avoir disparu.
+5. Toute modification d'URL, de canonical, de robots ou de masse exige une validation humaine explicite, avec plan de test et de retour arrière.
 
 ## 9. Livrable
-`templates/ux-cro-audit.md` et, pour le plan d'action, `templates/action-plan.csv` (colonne `seo_risk` obligatoire). Vérifications après modification : UX, SEO (`seo-quality-review`), mobile, Core Web Vitals.
+1. **Périmètre** : pages, conversion principale, cible, éléments vus (captures, HTML, données) et non vus, contraintes SEO.
+2. **Diagnostic général** : points forts, problèmes principaux.
+3. **Problèmes identifiés** : constat [statut], problème utilisateur, conséquence commerciale, confiance.
+4. **Recommandations prioritaires** : modification précise, justification, bénéfice, impact SEO, risque SEO, priorité, effort.
+5. **Améliorations secondaires**.
+6. **Plan d'action** dans un ordre logique de mise en œuvre.
+7. **Vérifications après modification** : UX desktop et mobile, SEO (Hn, contenu, liens, balises), Core Web Vitals, accessibilité, mesure avant/après datée.
+Pour la stratégie SEO globale, s'appuyer sur la skill `seo-strategie` ; pour réécrire un contenu, sur `redaction-seo`.
+
+## 10. Outils dans le terminal (Claude Code)
+Si Playwright est installé (`py -m pip install playwright` puis `py -m playwright install chromium`) :
+- `py .claude/skills/ux-cro/scripts/ux_snapshot.py <url1> [<url2>…] -o data/clean/ux/AAAA-MM-JJ` → captures desktop et mobile (premier écran et page entière) et contrôles automatiques : débordement horizontal, zones tactiles < 24px, images sans dimensions, image du premier écran en lazy-loading, texte trop petit, H1, plan des Hn, liens internes, mots du contenu rendu, LCP et CLS de laboratoire. **Regarder les captures** avant de conclure : les contrôles ne remplacent pas l'analyse.
+- Avant de modifier le code d'une page : un relevé, puis après modification un second relevé avec `--baseline <dossier du premier>` → titres, liens internes et contenu perdus sont signalés.
+- Sans Playwright : le dire et demander des captures.
+Modèles : `templates/ux-cro-audit.md` et `templates/action-plan.csv` (colonne `seo_risk`).

@@ -1,6 +1,6 @@
 # Charte éditoriale du projet
 
-À remplir une fois par projet. La skill `seo-copywriting` la lit avant chaque rédaction et ne pose de questions que sur ce qui reste vide. Si un champ est vide et nécessaire (au minimum **style** et **ton**), Claude le demande puis propose de compléter ce fichier.
+À remplir une fois par projet. La skill `redaction-seo` la lit avant chaque rédaction et ne pose de questions que sur ce qui reste vide. Si un champ est vide et nécessaire (au minimum **style** et **ton**), Claude le demande puis propose de compléter ce fichier.
 
 ## Identité
 - Site / marque :
