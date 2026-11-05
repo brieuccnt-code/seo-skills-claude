@@ -1,8 +1,8 @@
 # Pack SEO expert pour Claude Code
 
-5 skills, 8 scripts et des modèles de livrables pour faire de Claude un consultant SEO senior qui travaille selon tes règles.
+6 skills, 8 scripts et des modèles de livrables pour faire de Claude un consultant SEO senior qui travaille selon tes règles.
 
-## Les 5 skills
+## Les 6 skills
 | Skill | Contenu | Scripts |
 |---|---|---|
 | `seo-strategie` | Socle, modes création / optimisation, mots-clés, intention, clustering, mapping, cannibalisation, cocon, maillage, Search Console, audit et technique | `kp_clean.py`, `serp_cluster.py`, `gsc_analyze.py`, `link_graph.py`, `rapport.py` |
@@ -10,6 +10,7 @@
 | `ux-cro` | UX et conversion sous contrainte SEO, tests A/B sans risque SEO | `ux_snapshot.py`, `capture_zone.py` (Playwright) |
 | `audit-digital` | Système d'audit : 8 types (SEO, technique, contenu, UX, CRO, UX/CRO, complet, vérification ciblée), listes de contrôles, données manquantes, compte rendu | (utilise `ux_snapshot.py`, `capture_zone.py` et `rapport.py`) |
 | `seo-editorial` | Affiliation et transparence, comparatifs, politiques anti-spam Google, GEO, calendrier saisonnier | — |
+| `design-web-seo` | Design et intégration d'une page ou d'un site (création, refonte visuelle) sans dégrader le SEO : système visuel, typo, couleurs, photos, mouvement, gabarit HTML/CSS. S'inspire de Taste Skill (Leonxlnx, MIT) | `assets/gabarit.html`, `assets/base.css` |
 
 Les skills peuvent aussi être enregistrées sur le compte Claude (application et claude.ai), sans les scripts.
 
