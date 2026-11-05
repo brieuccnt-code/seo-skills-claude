@@ -1,0 +1,155 @@
+<!doctype html>
+<!-- design-web-seo : gabarit de départ.
+     Les textes entre [ ] viennent de redaction-seo ou de l'utilisateur ; tout ce qui reste [À compléter : …]
+     à la livraison est listé dans le compte rendu. En refonte : reprendre à l'identique title, meta,
+     canonical, robots et données structurées de la page existante. -->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<!-- Fournis par redaction-seo : title ≠ H1, tous deux avec le mot-clé principal -->
+<title>[Title de la page]</title>
+<meta name="description" content="[Meta description de la page]">
+
+<!-- Valeurs par défaut en création, à signaler à la livraison ; toute modification passe par seo-strategie -->
+<link rel="canonical" href="https://[domaine]/[chemin]/">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph (partage) : reprend title et description, image 1200 × 630 -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="[Title de la page]">
+<meta property="og:description" content="[Meta description de la page]">
+<meta property="og:url" content="https://[domaine]/[chemin]/">
+<meta property="og:image" content="https://[domaine]/assets/og-[page].jpg">
+
+<!-- hreflang seulement si le site est multilingue (seo-strategie) -->
+
+<!-- Polices auto-hébergées : précharger 1 ou 2 fichiers au plus, ceux du premier écran -->
+<link rel="preload" href="assets/fonts/titre-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/texte-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/base.css">
+
+<!-- Image du premier écran : préchargement facultatif si elle est en CSS ou découverte tard (sinon fetchpriority suffit) -->
+
+<!-- Données structurées : seulement un type qui correspond au contenu visible, validé par seo-strategie.
+     Exemple pour un lieu ; coordonnées identiques à celles affichées dans la page. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "[Nom exact]",
+  "url": "https://[domaine]/",
+  "image": "https://[domaine]/assets/[photo].jpg",
+  "telephone": "[Téléphone tel que fourni]",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "[Numéro et rue]",
+    "postalCode": "[Code postal]",
+    "addressLocality": "[Ville]",
+    "addressCountry": "FR"
+  }
+}
+</script>
+
+<!-- Ajoute la classe .js avant l'affichage : le menu mobile ne s'active que si le JavaScript tourne -->
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="skip" href="#contenu">Aller au contenu</a>
+    <a class="logo" href="/">[Nom ou logo SVG]</a>
+    <!-- Entrées issues du mapping : 4 à 6 mots, liens présents dans le HTML -->
+    <nav aria-label="Navigation principale">
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+      <ul class="nav-list" id="menu">
+        <li><a href="/[rubrique-1]/">[Rubrique 1]</a></li>
+        <li><a href="/[rubrique-2]/">[Rubrique 2]</a></li>
+        <li><a href="/[rubrique-3]/">[Rubrique 3]</a></li>
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </nav>
+    <a class="btn btn--primary" href="#[action]">[Verbe + objet]</a>
+  </div>
+</header>
+
+<main id="contenu">
+  <!-- Premier écran : une composition de references/systeme-visuel.md § 6 -->
+  <section class="hero">
+    <div class="wrap grid">
+      <div class="span-6">
+        <h1>[H1 fourni par redaction-seo]</h1>
+        <p class="read">[Accroche fournie par redaction-seo]</p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="#[action]">[Verbe + objet]</a>
+          <a class="btn btn--secondary" href="#[section]">[Verbe + objet]</a>
+        </div>
+      </div>
+      <div class="span-6">
+        <!-- Image LCP : jamais lazy, fetchpriority haute, srcset au plus 2 × la largeur affichée, ≤ 150 Ko si possible -->
+        <div class="frame" style="aspect-ratio: 4 / 3">
+          <img src="assets/img/[nom-descriptif]-1200.webp"
+               srcset="assets/img/[nom-descriptif]-600.webp 600w, assets/img/[nom-descriptif]-1200.webp 1200w"
+               sizes="(max-width: 1023px) 100vw, 600px"
+               width="1200" height="900" alt="[ALT fourni par redaction-seo]"
+               fetchpriority="high" decoding="async">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="[section]" class="alt">
+    <div class="wrap">
+      <h2>[H2 fourni par redaction-seo]</h2>
+      <div class="grid">
+        <article class="card span-4">
+          <div class="frame" style="aspect-ratio: 3 / 2">
+            <img src="assets/img/[nom-descriptif].webp" width="600" height="400" alt="[ALT]" loading="lazy" decoding="async">
+          </div>
+          <h3><a class="stretched" href="/[page]/">[H3]</a></h3>
+          <p>[Texte]</p>
+        </article>
+        <!-- Autres cartes : même style, même hauteur -->
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap grid">
+    <div class="span-4">
+      <p class="logo">[Nom]</p>
+      <!-- Coordonnées exactement telles que fournies, identiques aux données structurées -->
+      <address>[Numéro et rue]<br>[Code postal] [Ville]<br><a href="tel:[téléphone]">[Téléphone]</a></address>
+    </div>
+    <nav class="span-8" aria-label="Plan du site">
+      <ul class="rows">
+        <li><a href="/[rubrique-1]/">[Rubrique 1]</a></li>
+        <li><a href="/[rubrique-2]/">[Rubrique 2]</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="wrap legal">
+    <span>© <span>[Année]</span> [Nom]</span>
+    <a href="/mentions-legales/">Mentions légales</a>
+    <a href="/confidentialite/">Confidentialité</a>
+    <a href="/cookies/">Gestion des cookies</a>
+  </div>
+</footer>
+
+<!-- Barre d'action mobile (lieu ; facultative ailleurs) -->
+<div class="actionbar"><a class="btn btn--primary" href="#[action]">[Verbe + objet]</a></div>
+
+<script>
+  // Menu mobile : seule amélioration JavaScript indispensable ; les liens existent déjà dans le HTML
+  const btn = document.querySelector('.menu-btn');
+  btn?.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') !== 'true';
+    btn.setAttribute('aria-expanded', String(open));
+    btn.closest('.site-header').classList.toggle('nav-open', open);
+  });
+</script>
+</body>
+</html>
