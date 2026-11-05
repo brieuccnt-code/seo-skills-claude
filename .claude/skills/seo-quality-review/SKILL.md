@@ -18,7 +18,10 @@ description: Contrôle qualité final d'un livrable SEO (stratégie, contenu, ma
 
 **Contenu**
 - [ ] Répond au besoin dès le début ; original, exact, différencié.
-- [ ] Title / H1 / Hn descriptifs, non sur-optimisés ; title unique.
+- [ ] Style et ton conformes à la charte ou à la demande ; aucune formulation SEO artificielle.
+- [ ] Mot-clé principal présent dans le title **et** le H1 ; title ≠ H1 ; title unique sur le site.
+- [ ] Hn descriptifs et logiques, non sur-optimisés.
+- [ ] Longueur cohérente avec la fourchette mesurée (ou justifiée), sans remplissage.
 - [ ] Liens internes pertinents ; liens externes fiables si utiles.
 - [ ] Passages `[À confirmer]` listés.
 

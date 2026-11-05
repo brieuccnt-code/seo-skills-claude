@@ -8,7 +8,8 @@ Socle obligatoire, chargé à chaque session :
 
 Méthodes spécialisées (à lire quand la tâche les concerne) :
 - `references/COCON-SEMANTIQUE.md` : architecture en cocons, maillage strict.
-- `references/HEURISTIQUES.md` : seuils et règles de décision chiffrées.
+- `references/HEURISTIQUES.md` : seuils et règles de décision chiffrées (dont la longueur des contenus).
+- `references/CHARTE-EDITORIALE.md` : style, ton et conventions du projet. À lire avant toute rédaction ; ne demander que ce qui y manque.
 
 ## Organisation du dossier projet
 

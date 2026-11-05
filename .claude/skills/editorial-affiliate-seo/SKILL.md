@@ -9,8 +9,9 @@ description: SEO pour blogs, médias, sites de niche et sites d'affiliation : st
 Audience, légitimité éditoriale (qui écrit, pourquoi on le croit), sujets, rythme soutenable, modèle économique. Organiser par thèmes et intentions (`topical-authority` ou `cocon-semantique`).
 
 ## Articles
-- Réponse complète et originale : expérience de première main (photos, itinéraires, prix relevés, erreurs à éviter), méthode, sources fiables.
-- Auteur identifié, date de mise à jour **seulement** si le contenu a changé substantiellement.
+La rédaction suit la skill `seo-copywriting`. Spécifique aux sites éditoriaux :
+- Mettre en avant l'expérience de première main (photos, itinéraires, prix relevés, erreurs à éviter).
+- Auteur identifié ; date de mise à jour **seulement** si le contenu a changé substantiellement.
 - Sujets à fort enjeu (santé, argent, sécurité, démarches légales) : sources officielles et relecture compétente.
 
 ## Comparatifs et affiliation

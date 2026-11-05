@@ -23,11 +23,20 @@ Recouvrement = nombre d'URL communes dans le top 10 organique de deux requêtes.
 - Ignorer les lignes avec moins de ~50 impressions sur la période pour toute conclusion : trop de bruit.
 
 ## Pages
-- **Title** : terme principal tôt, promesse spécifique, environ 50–60 caractères visibles. Unique sur le site.
+- **Title** : mot-clé principal présent (de préférence tôt), promesse spécifique, environ 50–60 caractères visibles (repère d'affichage, pas une règle). Unique sur le site.
 - **Meta description** : résumé incitatif, environ 140–160 caractères. Google la réécrit souvent : ne pas y passer trop de temps sauf sur les pages à fort volume d'impressions.
-- **H1** : unique, descriptif, cohérent avec le title (pas forcément identique).
+- **H1** : unique, descriptif, contient le mot-clé principal, cohérent avec le title mais **jamais identique** (règle de la charte de rédaction, voir `seo-copywriting`).
 - **Profondeur** : pages stratégiques à 3 clics maximum de l'accueil.
 - **Page orpheline** : aucun lien interne entrant crawlable. Toujours un problème pour une page qu'on veut positionner.
+
+## Longueur d'un contenu
+Mesure : nombre de mots du **contenu principal** (hors menu, en-tête, pied de page, barres latérales) des pages du top 10, via `serp_length.py`.
+1. Écarter les pages d'un autre format que la page à produire (forum, vidéo, fiche produit, outil…) et les extractions ratées (< 150 mots).
+2. Il faut au moins 4 pages comparables ; sinon, la fourchette est peu fiable : le dire.
+3. Fourchette recommandée = P25–P75 des pages comparables, arrondie à 50 mots.
+4. Ajuster selon le plan : si le plan couvre nettement plus de sous-thèmes utiles que les concurrents, viser le haut de la fourchette ou au-delà ; s'il répond à un besoin plus étroit, le bas.
+5. Si P75 > 2,5 × P25, les formats sont probablement mélangés : refaire le tri avant de conclure.
+6. La fourchette est un repère, jamais un objectif : pas de remplissage pour l'atteindre, pas de coupe d'une information utile pour y rester. La longueur seule n'est pas un facteur de classement.
 
 ## Core Web Vitals (seuils « bon » au 75ᵉ centile, données terrain)
 - LCP ≤ 2,5 s · INP ≤ 200 ms · CLS ≤ 0,1.

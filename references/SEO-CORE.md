@@ -27,13 +27,11 @@ Pour chaque métrique : source, période, pays, langue, appareil si disponible, 
 7. Prioriser (voir §7).
 8. Définir comment mesurer le résultat et quand réévaluer.
 
-## 4. Règles éditoriales
-- Écrire pour l'utilisateur, jamais pour une densité de mots-clés.
-- Employer naturellement le terme principal, ses variantes, les entités et le vocabulaire métier.
-- Aucune longueur imposée : la longueur suit le besoin et ce que montrent les pages qui se classent.
-- Apporter une valeur propre : expérience vécue, méthode, données, exemples, outils, comparaisons, informations opérationnelles (prix, délais, étapes).
+## 4. Règles éditoriales (résumé — détail dans la skill `seo-copywriting`)
+- Écrire pour l'utilisateur, jamais pour une densité de mots-clés ni une longueur arbitraire.
+- Le style et le ton du projet (`references/CHARTE-EDITORIALE.md`) priment sur toute optimisation.
+- Apporter une valeur propre : expérience vécue, méthode, données, exemples, informations opérationnelles.
 - Signaler `[À confirmer]` toute information qui doit venir du client ou d'un expert.
-- Interdits : introductions creuses, répétitions, FAQ artificielles, paraphrase de concurrents, « dans cet article nous allons voir ».
 
 ## 5. Architecture et cannibalisation
 - Une requête ne justifie pas automatiquement une URL.

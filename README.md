@@ -20,6 +20,7 @@
 | `references/DATA-SOURCES.md` | quels exports fournir, limites de GSC / Keyword Planner / SERP / crawl |
 | `references/HEURISTIQUES.md` | seuils de décision (clustering, quick wins, cannibalisation, fusion, CWV) |
 | `references/COCON-SEMANTIQUE.md` | méthode cocon : rôles, règles de maillage, ancres |
+| `references/CHARTE-EDITORIALE.md` | style, ton et conventions **du projet** : à remplir au démarrage de chaque projet |
 | `.claude/skills/` | 22 skills spécialisées (dont `cocon-semantique`, nouvelle) |
 | `templates/` | modèles CSV et Markdown des livrables |
 
@@ -29,7 +30,13 @@
 | `keyword-research/scripts/kp_clean.py` | export Keyword Planner (FR/EN, UTF-16) | base normalisée, fourchettes, quasi-doublons, saisonnalité |
 | `keyword-clustering/scripts/serp_cluster.py` | top 10 SERP par requête (+ volumes) | clusters par recouvrement d'URL, cas limites |
 | `seo-measurement/scripts/gsc_analyze.py` | export GSC requête × page (+ période précédente) | quick wins, CTR faibles, cannibalisation, évolution |
+| `seo-copywriting/scripts/serp_length.py` | URL du top 10 (fichier SERP, liste ou pages HTML) | longueur du contenu principal par page, fourchette recommandée |
 | `cocon-semantique/scripts/link_graph.py` | export des liens internes (+ carte du cocon) | orphelines, profondeur, liens obligatoires manquants, liens hors cocon, ancres répétées |
+
+## Démarrer un projet
+1. Copier ou cloner le pack dans un dossier au nom du projet.
+2. Remplir `references/CHARTE-EDITORIALE.md` (ou laisser Claude poser les questions au premier contenu).
+3. Déposer les exports dans `data/raw/`.
 
 ## À personnaliser en priorité
 Les seuils de `references/HEURISTIQUES.md` sont des valeurs de départ raisonnables. Remplace-les par **tes** règles de travail : c'est ce qui fera de Claude un expert qui travaille comme toi.

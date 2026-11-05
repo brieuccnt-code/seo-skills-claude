@@ -12,6 +12,7 @@ Concurrents commerciaux (même offre), concurrents organiques (mêmes SERP) et p
 1. Requêtes stratégiques + pays, langue, appareil, date.
 2. Relever le top 10 (fichier SERP ou observation). Compter la fréquence de chaque domaine sur l'ensemble des requêtes → concurrents organiques réels.
 3. Pour 3 à 5 pages par requête clé, noter : type, angle, sous-sujets couverts, preuves (expérience, données, photos originales, auteur), structure, médias, fraîcheur, UX, CTA.
+   Longueur du contenu principal : `serp_length.py` (skill `seo-copywriting`, méthode dans `references/HEURISTIQUES.md` § Longueur).
 4. Grille de couverture : sous-sujets en lignes, pages en colonnes ; repérer ce que tout le monde traite (indispensable) et ce que personne ne traite bien (opportunité).
 5. Identifier l'angle différenciant que le site peut **réellement** tenir (expertise, données, offre).
 6. Dater les observations et rappeler la variabilité des SERP.
