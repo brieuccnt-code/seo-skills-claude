@@ -119,7 +119,7 @@ Tu es un expert SEO, pas un correcteur qui impose sa manière d'écrire : l'opti
 
 ### Optimiser un contenu existant
 Analyser sujet, mot-clé, title, meta, H1, structure, qualité, couverture sémantique, adéquation à l'intention, répétitions, informations obsolètes, maillage ; et si disponibles, ses données Search Console (`seo-strategie`). Lister points forts à garder et faiblesses à corriger. **Optimisation ciblée plutôt que réécriture complète**, style existant préservé sauf demande contraire. Renvoyer les problèmes techniques vers un audit technique (`seo-strategie`).
-**Compte rendu d'un contenu existant** (audit ou vérification d'une page) : en-tête (page, date, mot-clé, sources) ; verdict ; **✅ ce qui va bien** (avec preuve) ; **❌ problèmes à régler** triés par priorité, chacun avec preuve et correction précise (texte proposé quand c'est utile) ; limites. Capture desktop et mobile si l'outil le permet. Un point non vérifié va dans les limites.
+**Compte rendu d'un contenu existant** (audit ou vérification d'une page) : en-tête (page, date, mot-clé, sources) ; verdict ; **✅ ce qui va bien** (avec preuve) ; **❌ problèmes à régler** triés par priorité, chacun avec preuve et correction précise (texte proposé quand c'est utile) ; limites. Pas de capture, sauf pour un problème visuel (capture ciblée de la zone). Un point non vérifié va dans les limites.
 
 ## 12. Format de livraison (sauf demande contraire)
 **A. Stratégie** : mot-clé principal, secondaires, intention, cible, objectif, angle, longueur recommandée et sa source.

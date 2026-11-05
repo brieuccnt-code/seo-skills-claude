@@ -12,6 +12,10 @@ Pour chaque page et chaque appareil (desktop 1440×900, mobile iPhone 13) :
 - --js : vérifie le rendu JavaScript. Compare la page SANS JavaScript (HTML servi, ce que tout
   robot lit immédiatement) et la page rendue (title, canonical, meta robots, Hn, liens internes, mots)
   et prend des captures desktop et mobile sans JavaScript (desktop_sans_js.jpg, mobile_sans_js.jpg) comme preuves.
+- images (toujours) : inventaire des images réellement téléchargées, par appareil : poids, format, dimensions du
+  fichier et affichées, premier écran, lazy-loading, ALT → images_desktop.csv, images_mobile.csv ; signale les images
+  de plus de --max-image-kb Ko (150 par défaut), hors WebP/AVIF/SVG, surdimensionnées (fichier plus de max(2, DPR) fois
+  plus large qu'affiché) et celles du premier écran en lazy-loading.
 - --baseline : compare avec un relevé précédent (Hn, liens internes, nombre de mots) pour
   vérifier qu'une modification n'a rien retiré d'important pour le SEO.
 
@@ -232,15 +236,118 @@ def js_check(browser, url, pdir, rendered, timeout, mobile_opts=None):
     return out, table, {"sans_js": raw, "titres_manquants": missing_h, "liens_manquants": missing_l}
 
 
+IMG_DOM_JS = r"""
+() => {
+  const vh = window.innerHeight, out = [];
+  const abs = u => { try { const x = new URL(u, location.href); x.hash = ''; return x.href; } catch (e) { return ''; } };
+  for (const im of document.images) {
+    const r = im.getBoundingClientRect();
+    out.push({url: abs(im.currentSrc || im.src), kind: 'img', natural_w: im.naturalWidth, natural_h: im.naturalHeight,
+      display_w: Math.round(r.width), display_h: Math.round(r.height), visible: r.width > 0 && r.height > 0,
+      first_screen: r.width > 0 && r.top < vh && r.bottom > 0, loading: im.loading || '',
+      has_dims: !!(im.getAttribute('width') && im.getAttribute('height')), alt: im.getAttribute('alt')});
+  }
+  let n = 0;
+  for (const el of document.querySelectorAll('body *')) {
+    if (n > 400) break;
+    const bg = getComputedStyle(el).backgroundImage;
+    if (!bg || bg === 'none' || !bg.includes('url(')) continue;
+    const m = [...bg.matchAll(/url\(["']?([^"')]+)["']?\)/g)];
+    const r = el.getBoundingClientRect();
+    for (const x of m) { if (x[1].startsWith('data:')) continue; n++;
+      out.push({url: abs(x[1]), kind: 'css', natural_w: 0, natural_h: 0, display_w: Math.round(r.width),
+        display_h: Math.round(r.height), visible: r.width > 0 && r.height > 0,
+        first_screen: r.width > 0 && r.top < vh && r.bottom > 0, loading: '', has_dims: true, alt: null}); }
+  }
+  return {dpr: window.devicePixelRatio || 1, images: out};
+}
+"""
+
+MODERN = {"webp", "avif", "svg"}
+
+
+def fmt_of(ctype, url):
+    c = (ctype or "").split(";")[0].strip().lower()
+    m = {"image/webp": "webp", "image/avif": "avif", "image/svg+xml": "svg", "image/jpeg": "jpeg", "image/jpg": "jpeg",
+         "image/png": "png", "image/gif": "gif", "image/x-icon": "ico", "image/vnd.microsoft.icon": "ico"}
+    if c in m:
+        return m[c]
+    ext = os.path.splitext(urlsplit(url).path)[1].lower().lstrip(".")
+    return {"jpg": "jpeg"}.get(ext, ext or "?")
+
+
+def image_inventory(responses, dom, max_kb, outfile):
+    """Croise les images réellement téléchargées (réseau) et leur affichage (DOM). Écrit un CSV, retourne un résumé."""
+    net = {}
+    for resp in responses:
+        try:
+            url = resp.url.split("#")[0]
+            if url.startswith("data:") or url in net:
+                continue
+            try:
+                size = len(resp.body())
+            except Exception:
+                size = (resp.request.sizes() or {}).get("responseBodySize", 0)
+            net[url] = {"status": resp.status, "format": fmt_of(resp.headers.get("content-type"), url), "bytes": size}
+        except Exception:
+            continue
+    dpr = dom.get("dpr", 1)
+    rows, seen = [], set()
+    by_url = {}
+    for im in dom.get("images", []):
+        by_url.setdefault(im["url"], []).append(im)
+    for url, info in net.items():
+        uses = by_url.get(url, [])
+        vis = [u for u in uses if u["visible"]] or uses
+        u0 = max(vis, key=lambda u: u["display_w"]) if vis else {}
+        fmt, kb = info["format"], round(info["bytes"] / 1024, 1)
+        if fmt == "ico":
+            continue
+        nat_w, disp_w = u0.get("natural_w", 0), u0.get("display_w", 0)
+        first = any(u.get("first_screen") for u in uses)
+        flags = []
+        if kb > max_kb:
+            flags.append(f"plus de {max_kb} Ko")
+        if fmt not in MODERN:
+            flags.append(f"format {fmt.upper()} (WebP ou AVIF attendu)")
+        if nat_w and disp_w and nat_w > max(2, dpr) * disp_w:
+            flags.append(f"surdimensionnée ({nat_w} px pour {disp_w} px affichés)")
+        if first and any(u.get("loading") == "lazy" for u in uses):
+            flags.append("premier écran en lazy-loading")
+        if uses and any(u["kind"] == "img" and u["visible"] and not u["has_dims"] for u in uses):
+            flags.append("sans width/height")
+        rows.append({"url": url, "format": fmt, "poids_ko": kb, "largeur_fichier": nat_w or "", "largeur_affichee": disp_w or "",
+                     "premier_ecran": "oui" if first else "non", "type": (u0.get("kind") or "réseau"),
+                     "alt": "" if not uses or uses[0]["alt"] is None else uses[0]["alt"][:80], "problemes": " ; ".join(flags)})
+        seen.add(url)
+    rows.sort(key=lambda x: -x["poids_ko"])
+    import csv as _csv
+    with open(outfile, "w", newline="", encoding="utf-8-sig") as f:
+        w = _csv.DictWriter(f, fieldnames=list(rows[0].keys()) if rows else ["url"])
+        w.writeheader()
+        w.writerows(rows)
+    heavy = [r for r in rows if r["poids_ko"] > max_kb]
+    old = [r for r in rows if r["format"] not in MODERN]
+    over = [r for r in rows if "surdimensionnée" in r["problemes"]]
+    lazy_first = [r for r in rows if "premier écran en lazy" in r["problemes"]]
+    return {"total": len(rows), "poids_total_ko": round(sum(r["poids_ko"] for r in rows), 1), "seuil_ko": max_kb,
+            "lourdes": [(r["url"], r["poids_ko"], r["format"]) for r in heavy],
+            "format_ancien": [(r["url"], r["format"], r["poids_ko"]) for r in old],
+            "surdimensionnees": [(r["url"], r["largeur_fichier"], r["largeur_affichee"]) for r in over],
+            "lazy_premier_ecran": [r["url"] for r in lazy_first], "csv": outfile}
+
+
 def slug(url):
     p = urlsplit(url)
     s = (p.netloc + p.path).strip("/") or "page"
     return re.sub(r"[^\w.-]+", "_", s)[:80]
 
 
-def audit(ctx, url, outdir, mobile, timeout, vw):
+def audit(ctx, url, outdir, mobile, timeout, vw, max_kb=150):
     page = ctx.new_page()
     page.add_init_script(INIT_JS)
+    responses = []
+    page.on("response", lambda r: responses.append(r) if r.request.resource_type == "image" else None)
     status = None
     try:
         resp = page.goto(url, wait_until="load", timeout=timeout)
@@ -257,6 +364,12 @@ def audit(ctx, url, outdir, mobile, timeout, vw):
         page.screenshot(path=os.path.join(outdir, f"{'mobile' if mobile else 'desktop'}_complet.jpg"), full_page=True,
                         type="jpeg", quality=60)
         data = page.evaluate(AUDIT_JS, [mobile, vw])
+        try:
+            dom = page.evaluate(IMG_DOM_JS)
+            data["images"] = image_inventory(responses, dom, max_kb, os.path.join(
+                outdir, f"images_{'mobile' if mobile else 'desktop'}.csv"))
+        except Exception as e:
+            data["images"] = {"erreur": str(e)[:200]}
     except Exception as e:
         data = {"erreur": str(e)[:300]}
     data["status"] = status
@@ -318,6 +431,7 @@ def main():
     ap.add_argument("-o", "--outdir", required=True)
     ap.add_argument("--baseline", help="dossier d'un relevé précédent du même script, pour comparaison")
     ap.add_argument("--timeout", type=int, default=45, help="secondes par page")
+    ap.add_argument("--max-image-kb", type=int, default=150, help="seuil de poids d'une image en Ko (défaut 150)")
     ap.add_argument("--js", action="store_true", help="vérifier le rendu JavaScript (capture sans JS + comparaison)")
     args = ap.parse_args()
     os.makedirs(args.outdir, exist_ok=True)
@@ -337,7 +451,7 @@ def main():
             report.append(f"## {target}")
             for name, opts, mobile in devices:
                 ctx = browser.new_context(locale="fr-FR", **opts)
-                d = audit(ctx, target, pdir, mobile, args.timeout * 1000, opts["viewport"]["width"])
+                d = audit(ctx, target, pdir, mobile, args.timeout * 1000, opts["viewport"]["width"], args.max_image_kb)
                 ctx.close()
                 result[name] = d
                 report.append(f"### {name.capitalize()}")
@@ -345,6 +459,19 @@ def main():
                 if "erreur" not in d:
                     report.append(f"- Title : {d['title']!r} · mots du contenu : {d['words']} · liens internes : "
                                   f"{len(d['internal_links'])} · LCP labo : {d['lab_lcp_ms']} ms · CLS labo : {d['lab_cls']}")
+                    im = d.get("images") or {}
+                    if "erreur" in im:
+                        report.append(f"- Images : inventaire impossible ({im['erreur']})")
+                    elif im:
+                        report.append(f"- Images : {im['total']} téléchargées, {im['poids_total_ko']:.0f} Ko au total · détail : `{im['csv']}`")
+                        report.append(f"  - {len(im['lourdes'])} de plus de {im['seuil_ko']} Ko" + (" : " + " ; ".join(
+                            f"{u.rsplit('/', 1)[-1][:50]} ({kb:.0f} Ko, {f})" for u, kb, f in im['lourdes'][:15]) if im['lourdes'] else ""))
+                        report.append(f"  - {len(im['format_ancien'])} hors WebP/AVIF/SVG" + (" : " + " ; ".join(
+                            f"{u.rsplit('/', 1)[-1][:50]} ({f.upper()}, {kb:.0f} Ko)" for u, f, kb in im['format_ancien'][:15]) if im['format_ancien'] else ""))
+                        report.append(f"  - {len(im['surdimensionnees'])} surdimensionnée(s)" + (" : " + " ; ".join(
+                            f"{u.rsplit('/', 1)[-1][:50]} ({a} px pour {b} px)" for u, a, b in im['surdimensionnees'][:10]) if im['surdimensionnees'] else ""))
+                        if im["lazy_premier_ecran"]:
+                            report.append("  - Premier écran en lazy-loading : " + " ; ".join(u.rsplit('/', 1)[-1][:50] for u in im["lazy_premier_ecran"]))
                     report.append("- Liens et boutons du premier écran : " + (" | ".join(d["links_buttons_first_screen"]) or "aucun"))
                     report.append(f"- Captures : `{pdir}/{name}_ecran.jpg`, `{pdir}/{name}_complet.jpg`")
             if args.js and "erreur" not in result.get("desktop", {"erreur": 1}):

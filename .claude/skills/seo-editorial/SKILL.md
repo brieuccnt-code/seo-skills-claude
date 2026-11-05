@@ -65,7 +65,7 @@ Livrable : thème, page, type (création / mise à jour), mois de pic, date de p
 - Mesurer les clics affiliés comme conversions (événements analytics) ; revenus analysés seulement si fournis.
 
 ## 7. Contrôle avant publication (en plus de la checklist de `redaction-seo`)
-Pour l'audit d'une page ou d'un site existant, rendre un compte rendu en deux parties : **✅ ce qui va bien** et **❌ problèmes à régler** (triés par priorité, chacun avec preuve et correction), précédées d'un verdict et suivies des limites ; captures desktop et mobile quand l'outil le permet.
+Pour l'audit d'une page ou d'un site existant, rendre un compte rendu en deux parties : **✅ ce qui va bien** et **❌ problèmes à régler** (triés par priorité, chacun avec preuve et correction), précédées d'un verdict et suivies des limites ; captures ciblées uniquement pour un problème visuel (ex. widget de réservation invisible sur mobile).
 - [ ] La page apporte une valeur propre (test, données, expérience, comparaison) — pas une reprise du marchand ni une page de série.
 - [ ] Mention de transparence visible avant le premier lien affilié ; liens en `rel="sponsored"`.
 - [ ] Ce qui a été testé et ce qui ne l'a pas été est dit clairement.

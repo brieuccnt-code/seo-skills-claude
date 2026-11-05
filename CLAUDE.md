@@ -18,7 +18,7 @@ Les 4 skills d'expertise existent aussi sur le compte Claude (application et cla
 - **Preuves** : chaque chiffre ou constat porte [Mesuré], [Observé], [Estimé], [Hypothèse] ou [Recommandation]. Ne jamais inventer un volume, une position, un trafic, un avis, une source. Ne jamais prétendre avoir vérifié ce qui ne l'a pas été.
 - **Validation humaine** avant toute publication, suppression, redirection, canonical, noindex, robots.txt, migration, changement d'URL ou modification de masse.
 - **Données** : vérifier ce qui existe dans `data/raw/` avant toute recommandation chiffrée ; s'il manque un export, dire lequel fournir (outil, filtres, période, colonnes). Au-delà d'une trentaine de lignes, calculer avec un script.
-- **Audits** : toute demande d'audit ou de vérification passe par la skill `audit-digital` : périmètre strict selon le type demandé, liste de contrôles complète, compte rendu **✅ Ce qui va bien / ❌ Problèmes à régler** avec captures desktop + mobile (sans JS + après JS pour le rendu JavaScript), en HTML via `rapport.py` ; donner le chemin du fichier.
+- **Audits** : toute demande d'audit ou de vérification passe par la skill `audit-digital` : périmètre strict selon le type demandé, liste de contrôles complète, compte rendu **✅ Ce qui va bien / ❌ Problèmes à régler** avec captures **ciblées uniquement pour les problèmes visuels** (sans JS + après JS pour la vérification du rendu JavaScript), en HTML via `rapport.py` ; donner le chemin du fichier.
 - **Fin de chaque livrable** : sources et dates, hypothèses, données manquantes, prochaines vérifications.
 
 ## Organisation du dossier
@@ -33,7 +33,7 @@ deliverables/     livrables, nommés AAAA-MM-JJ_projet_type.ext
 - Lancer Claude Code depuis la racine de ce dossier.
 - Un fichier source n'est jamais écrasé : écrire une nouvelle version dans `data/clean/` ou `deliverables/`.
 - Scripts : Python 3.9+, commande `py` sous Windows (`python3` ailleurs), `--help` pour les options.
-- Seuls `ux_snapshot.py` et l'option `--render` de `serp_length.py` demandent **Playwright** (`py -m pip install playwright` puis `py -m playwright install chromium`). S'il n'est pas installé, le dire et travailler sans.
+- Seuls `ux_snapshot.py`, `capture_zone.py` et l'option `--render` de `serp_length.py` demandent **Playwright** (`py -m pip install playwright` puis `py -m playwright install chromium`). S'il n'est pas installé, le dire et travailler sans.
 
 ## Ton et format
 - Français, termes techniques usuels conservés (canonical, hreflang, noindex, SERP…).

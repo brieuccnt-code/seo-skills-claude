@@ -7,20 +7,17 @@
   "sources": ["Captures et contrôles ux_snapshot du 2026-11-05", "Search Console, 3 derniers mois"],
   "perimetre": "Page d'accueil, desktop 1440 px et mobile iPhone 13. Données disponibles : captures, HTML. Non disponibles : analytics.",
   "verdict": "Deux phrases : l'état général et la priorité n° 1.",
-  "captures": [
-    {"titre": "Desktop", "fichier": "../data/clean/ux/2026-11-05/exemple.com/desktop_ecran.jpg", "legende": "premier écran"},
-    {"titre": "Mobile", "fichier": "../data/clean/ux/2026-11-05/exemple.com/mobile_ecran.jpg", "legende": "premier écran"}
-  ],
+  "captures": [],
   "tableau": {
     "titre": "Mesures (facultatif)",
     "colonnes": ["Contrôle", "Desktop", "Mobile"],
     "lignes": [["Débordement horizontal", "0 px", "0 px"]]
   },
   "points_forts": [
-    {"titre": "Proposition de valeur claire", "detail": "Ce qui est bien et pourquoi.", "preuve": "Ce qui le montre.", "statut": "Observé", "capture": "../data/clean/ux/2026-11-05/exemple.com/desktop_ecran.jpg"}
+    {"titre": "Proposition de valeur claire", "detail": "Ce qui est bien et pourquoi.", "preuve": "Ce qui le montre.", "statut": "Observé"}
   ],
   "problemes": [
-    {"titre": "CTA principal invisible sur mobile", "detail": "Le constat et sa conséquence pour le visiteur ou le SEO.", "preuve": "Capture mobile : bouton sous la ligne de flottaison.", "statut": "Observé", "priorite": "haute", "impact": "fort", "effort": "faible", "risque_seo": "aucun", "recommandation": "Correction précise, avec exemple quand c'est utile.", "capture": "../data/clean/ux/2026-11-05/exemple.com/mobile_ecran.jpg"}
+    {"titre": "Texte du CTA principal illisible sur mobile", "detail": "Le constat et sa conséquence pour le visiteur ou le SEO.", "preuve": "Capture ciblée du bouton (capture_zone.py) : texte blanc sur fond jaune clair, contraste 1,4:1.", "statut": "Observé", "priorite": "haute", "impact": "fort", "effort": "faible", "risque_seo": "aucun", "recommandation": "Correction précise, avec exemple quand c'est utile.", "capture": "captures/cta-mobile.jpg"}
   ],
   "controles": [
     {"id": "U1", "point": "Compréhension immédiate", "statut": "✅ conforme", "note": "Sujet et action principale visibles au premier écran."},
