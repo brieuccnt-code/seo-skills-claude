@@ -32,6 +32,14 @@ from html.parser import HTMLParser
 from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 
+# Windows : éviter les erreurs d'affichage des accents et symboles quand la sortie est redirigée
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 SKIP = {"script", "style", "noscript", "nav", "header", "footer", "aside", "form", "svg", "template",
         "iframe", "button", "select"}
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"}

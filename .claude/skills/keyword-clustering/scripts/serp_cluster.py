@@ -25,6 +25,14 @@ import unicodedata
 from collections import defaultdict
 from urllib.parse import urlsplit
 
+# Windows : éviter les erreurs d'affichage des accents et symboles quand la sortie est redirigée
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 
 def strip_accents(s):
     return "".join(c for c in unicodedata.normalize("NFD", s) if unicodedata.category(c) != "Mn")

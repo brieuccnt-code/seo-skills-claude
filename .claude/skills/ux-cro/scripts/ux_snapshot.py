@@ -31,6 +31,14 @@ try:
 except ImportError:
     sys.exit("Playwright n'est pas installé : py -m pip install playwright  puis  py -m playwright install chromium")
 
+# Windows : éviter les erreurs d'affichage des accents et symboles quand la sortie est redirigée
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 INIT_JS = """
 window.__ux = {lcp: 0, cls: 0};
 try {

@@ -19,6 +19,14 @@ import sys
 import unicodedata
 from collections import defaultdict
 
+# Windows : éviter les erreurs d'affichage des accents et symboles quand la sortie est redirigée
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 COLS = {
     "query": ["query", "queries", "top queries", "requete", "requetes", "requetes les plus frequentes"],
     "page": ["page", "pages", "url", "landing page", "top pages", "pages les plus populaires", "adresse"],

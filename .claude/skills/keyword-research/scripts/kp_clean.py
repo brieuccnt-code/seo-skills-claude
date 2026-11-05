@@ -17,6 +17,14 @@ import sys
 import unicodedata
 from datetime import date
 
+# Windows : éviter les erreurs d'affichage des accents et symboles quand la sortie est redirigée
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 OUT_COLS = ["keyword", "source", "date", "country", "language", "avg_monthly_searches",
             "volume_low", "volume_high", "competition", "competition_index",
             "top_of_page_bid_low", "top_of_page_bid_high", "peak_month", "seasonality_index",

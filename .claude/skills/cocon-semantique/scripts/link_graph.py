@@ -23,6 +23,14 @@ import unicodedata
 from collections import defaultdict, deque
 from urllib.parse import urlsplit
 
+# Windows : éviter les erreurs d'affichage des accents et symboles quand la sortie est redirigée
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+
 CONTENT_POSITIONS = {"content", "contenu", "corps", "body"}
 
 
