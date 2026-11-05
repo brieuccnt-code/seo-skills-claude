@@ -1,0 +1,19 @@
+# Brief de contenu
+- URL cible :
+- Type de page :
+- Objectif utilisateur :
+- Objectif business :
+- Mot-clé principal :
+- Cluster / variantes :
+- Intention dominante :
+- Questions à résoudre :
+- Entités et sous-thèmes :
+- Preuves / expertise disponibles :
+- Pages concurrentes observées :
+- Différenciation éditoriale :
+- Structure proposée :
+- CTA :
+- Liens internes entrants / sortants :
+- Sources et faits à vérifier :
+- Risques de cannibalisation :
+- Critères d'acceptation :

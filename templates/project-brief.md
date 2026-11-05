@@ -1,0 +1,15 @@
+# Brief SEO projet
+- Type de site :
+- URL / statut (nouveau ou existant) :
+- Activité / offre :
+- Audience :
+- Pays / langue :
+- Zone de chalandise :
+- Objectifs business :
+- Conversions prioritaires :
+- CMS / stack :
+- Concurrents connus :
+- Pages / catégories existantes :
+- Données disponibles (GSC, Keyword Planner, crawl, analytics) :
+- Contraintes légales / réglementaires / métier :
+- Validation et interlocuteurs :

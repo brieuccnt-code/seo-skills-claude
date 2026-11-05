@@ -1,0 +1,14 @@
+# Données clients : ne jamais versionner
+data/raw/*
+data/clean/*
+deliverables/*
+!data/raw/.gitkeep
+!data/clean/.gitkeep
+!deliverables/.gitkeep
+
+# Secrets et fichiers locaux
+.env
+*.token
+.claude/settings.local.json
+__pycache__/
+*.pyc
