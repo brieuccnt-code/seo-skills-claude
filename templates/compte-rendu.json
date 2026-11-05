@@ -1,27 +1,38 @@
 {
-  "titre": "Audit UX — page d'accueil",
-  "type": "UX/CRO",
+  "titre": "Audit UX/CRO — page d'accueil",
+  "type": "Audit UX/CRO",
   "url": "https://exemple.com/",
   "date": "2026-11-05",
   "mode": "optimisation",
   "sources": ["Captures et contrôles ux_snapshot du 2026-11-05", "Search Console, 3 derniers mois"],
-  "perimetre": "Page d'accueil, desktop 1440 px et mobile iPhone 13. Non vérifié : parcours de réservation, données analytics.",
-  "verdict": "Une phrase : l'état général et la priorité n° 1.",
+  "perimetre": "Page d'accueil, desktop 1440 px et mobile iPhone 13. Données disponibles : captures, HTML. Non disponibles : analytics.",
+  "verdict": "Deux phrases : l'état général et la priorité n° 1.",
   "captures": [
-    {"titre": "Desktop", "fichier": "../data/clean/ux/2026-11-05/exemple.com/desktop_ecran.png", "legende": "premier écran"},
-    {"titre": "Mobile", "fichier": "../data/clean/ux/2026-11-05/exemple.com/mobile_ecran.png", "legende": "premier écran"}
+    {"titre": "Desktop", "fichier": "../data/clean/ux/2026-11-05/exemple.com/desktop_ecran.jpg", "legende": "premier écran"},
+    {"titre": "Mobile", "fichier": "../data/clean/ux/2026-11-05/exemple.com/mobile_ecran.jpg", "legende": "premier écran"}
   ],
   "tableau": {
-    "titre": "Mesures (optionnel)",
+    "titre": "Mesures (facultatif)",
     "colonnes": ["Contrôle", "Desktop", "Mobile"],
     "lignes": [["Débordement horizontal", "0 px", "0 px"]]
   },
   "points_forts": [
-    {"titre": "Proposition de valeur claire", "detail": "Ce qui est bien et pourquoi.", "preuve": "Ce qui le montre.", "statut": "Observé", "capture": "../data/clean/ux/2026-11-05/exemple.com/desktop_ecran.png"}
+    {"titre": "Proposition de valeur claire", "detail": "Ce qui est bien et pourquoi.", "preuve": "Ce qui le montre.", "statut": "Observé", "capture": "../data/clean/ux/2026-11-05/exemple.com/desktop_ecran.jpg"}
   ],
   "problemes": [
-    {"titre": "CTA principal invisible sur mobile", "detail": "Le problème et sa conséquence pour le visiteur.", "preuve": "Capture mobile : bouton sous la ligne de flottaison.", "statut": "Observé", "priorite": "haute", "impact": "fort", "effort": "faible", "risque_seo": "aucun", "recommandation": "Modification précise à faire.", "capture": "../data/clean/ux/2026-11-05/exemple.com/mobile_ecran.png"}
+    {"titre": "CTA principal invisible sur mobile", "detail": "Le constat et sa conséquence pour le visiteur ou le SEO.", "preuve": "Capture mobile : bouton sous la ligne de flottaison.", "statut": "Observé", "priorite": "haute", "impact": "fort", "effort": "faible", "risque_seo": "aucun", "recommandation": "Correction précise, avec exemple quand c'est utile.", "capture": "../data/clean/ux/2026-11-05/exemple.com/mobile_ecran.jpg"}
   ],
-  "limites": ["Ce qui n'a pas pu être vérifié et pourquoi."],
-  "prochaines_etapes": ["Action suivante, et date de revérification."]
+  "controles": [
+    {"id": "U1", "point": "Compréhension immédiate", "statut": "✅ conforme", "note": "Sujet et action principale visibles au premier écran."},
+    {"id": "R2", "point": "Appels à l'action", "statut": "❌ problème", "note": "Voir problème « CTA principal invisible sur mobile »."},
+    {"id": "R9", "point": "Mesure des conversions", "statut": "◻️ non vérifié", "note": "Analytics non fourni : export GA4 Rapports → Conversions."}
+  ],
+  "confiance": "Moyen : diagnostic fondé sur les captures et le HTML, sans données de comportement.",
+  "plan_action": [
+    {"action": "Remonter le CTA principal dans le premier écran mobile", "priorite": "haute", "effort": "faible", "groupe": "gain rapide"}
+  ],
+  "donnees_complementaires": ["GA4 : conversions par page et par appareil (CSV) → permettrait de vérifier R1, R8 et R9."],
+  "conclusion": "Une ou deux phrases de conclusion.",
+  "hors_perimetre": ["LCP de 3,2 s en laboratoire → à voir dans un audit technique."],
+  "limites": ["Ce qui n'a pas pu être vérifié, pourquoi, et comment le vérifier."]
 }

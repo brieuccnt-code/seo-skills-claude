@@ -4,9 +4,11 @@
 Entrée : un fichier JSON rempli par Claude (modèle : templates/compte-rendu.json).
 Sortie : une page HTML autonome (captures intégrées), qui s'ouvre d'un double-clic dans le navigateur.
 
-Structure du compte rendu :
-  en-tête (type, page, date, mode, sources) → synthèse chiffrée → captures desktop / mobile
-  → ✅ Ce qui va bien → ❌ Problèmes à régler (triés par priorité) → limites et prochaines étapes
+Structure du compte rendu (skill audit-digital § 5) :
+  périmètre → synthèse chiffrée et verdict → preuves visuelles (desktop / mobile) → ✅ ce qui va bien
+  → ❌ problèmes à régler (triés par criticité) → tableau des contrôles → niveau de confiance
+  → plan d'action → données complémentaires → conclusion → repéré hors périmètre → limites
+Tous les champs sont facultatifs sauf le titre : une vérification ciblée n'utilise que les premiers.
 
 Exemple :
   py rapport.py deliverables/2026-11-05_albanie_audit-ux.json -o deliverables/2026-11-05_albanie_audit-ux.html
@@ -45,8 +47,8 @@ h1{font-size:28px;line-height:1.2;margin:0 0 6px}h2{font-size:21px;margin:40px 0
 .tile.ok .n{color:var(--ok)}.tile.ko .n{color:var(--ko)}.tile.mid .n{color:var(--mid)}
 .verdict{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px}
 .shots{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
-figure{margin:0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;flex:1 1 300px}
-figure.narrow{flex:0 1 260px}figure img{width:100%;height:auto;display:block;border-radius:6px;border:1px solid var(--line)}
+figure{margin:0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;flex:1 1 230px}
+figure.narrow{flex:0 1 170px}figure img{width:100%;height:auto;display:block;border-radius:6px;border:1px solid var(--line)}
 figcaption{font-size:13px;color:var(--muted);margin-top:8px}figcaption b{color:var(--ink)}
 .item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:10px 0}
 .item h3{font-size:17px;margin:0 0 6px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
@@ -115,6 +117,11 @@ def main():
     ko = sorted(d.get("problemes", []) or [], key=lambda x: PRIO_ORDER.get((x.get("priorite") or "").lower(), 3))
     n_h = sum(1 for x in ko if (x.get("priorite") or "").lower() == "haute")
     n_m = sum(1 for x in ko if (x.get("priorite") or "").lower() == "moyenne")
+    ctrl = d.get("controles", []) or []
+    n_nv = sum(1 for c in ctrl if str(c.get("statut", "")).lower().startswith(("non v", "◻", "nv")))
+
+    def ul(items):
+        return '<ul class="plain">' + "".join(f"<li>{esc(x)}</li>" for x in items) + "</ul>"
 
     meta = []
     for key, label in (("type", "Type"), ("url", "Page"), ("date", "Date"), ("mode", "Mode")):
@@ -125,16 +132,20 @@ def main():
         meta.append("<b>Sources</b> : " + esc(" · ".join(d["sources"])))
 
     parts = [f"<h1>{esc(d.get('titre', 'Compte rendu'))}</h1>", f'<div class="meta">{" &nbsp;·&nbsp; ".join(meta)}</div>']
-    parts.append('<div class="summary">'
-                 f'<div class="tile ok"><div class="n">{len(ok)}</div><div class="l">points qui vont bien</div></div>'
-                 f'<div class="tile ko"><div class="n">{len(ko)}</div><div class="l">problèmes à régler</div></div>'
-                 f'<div class="tile ko"><div class="n">{n_h}</div><div class="l">priorité haute</div></div>'
-                 f'<div class="tile mid"><div class="n">{n_m}</div><div class="l">priorité moyenne</div></div></div>')
+    # 1. Périmètre et état des lieux
+    if d.get("perimetre"):
+        parts.append(f'<h2>Périmètre et état des lieux</h2><p>{esc(d["perimetre"])}</p>')
+    # 2. Synthèse
+    parts.append("<h2>Synthèse</h2>")
+    tiles = [("ok", len(ok), "points qui vont bien"), ("ko", len(ko), "problèmes à régler"),
+             ("ko", n_h, "criticité haute"), ("mid", n_m, "criticité moyenne")]
+    if ctrl:
+        tiles.append(("", n_nv, "points non vérifiés"))
+    parts.append('<div class="summary">' + "".join(
+        f'<div class="tile {c}"><div class="n">{n}</div><div class="l">{l}</div></div>' for c, n, l in tiles) + "</div>")
     if d.get("verdict"):
         parts.append(f'<div class="verdict">{esc(d["verdict"])}</div>')
-    if d.get("perimetre"):
-        parts.append(f'<h2>Périmètre</h2><p>{esc(d["perimetre"])}</p>')
-
+    # 3. Preuves visuelles
     caps = d.get("captures", []) or []
     if caps:
         figs = []
@@ -142,32 +153,60 @@ def main():
             narrow = "mobile" in (c.get("titre", "") + c.get("fichier", "")).lower()
             figs.append(f'<figure class="{"narrow" if narrow else ""}">{img_tag(c.get("fichier"), base, c.get("titre"))}'
                         f'<figcaption><b>{esc(c.get("titre"))}</b>{(" — " + esc(c["legende"])) if c.get("legende") else ""}</figcaption></figure>')
-        parts.append('<h2>Captures</h2><div class="shots">' + "".join(figs) + "</div>")
-
+        parts.append('<h2>Preuves visuelles</h2><div class="shots">' + "".join(figs) + "</div>")
     if d.get("tableau"):
         t = d["tableau"]
         head = "".join(f"<th>{esc(h)}</th>" for h in t.get("colonnes", []))
         body = "".join("<tr>" + "".join(f"<td>{esc(c)}</td>" for c in r) + "</tr>" for r in t.get("lignes", []))
         parts.append(f'<h2>{esc(t.get("titre", "Mesures"))}</h2><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>')
-
+    # 4-5. Ce qui va bien / problèmes
     parts.append("<h2>✅ Ce qui va bien</h2>")
     parts.append('<div class="ok-list">' + ("".join(item_html(x, base, "ok") for x in ok)
                  or '<p class="empty">Aucun point positif relevé.</p>') + "</div>")
     parts.append("<h2>❌ Problèmes à régler</h2>")
     parts.append('<div class="ko-list">' + ("".join(item_html(x, base, "ko") for x in ko)
                  or '<p class="empty">Aucun problème détecté sur le périmètre vérifié.</p>') + "</div>")
-    for key, label in (("limites", "Limites et ce qui n'a pas été vérifié"), ("prochaines_etapes", "Prochaines étapes")):
-        if d.get(key):
-            parts.append(f"<h2>{label}</h2><ul class=\"plain\">" + "".join(f"<li>{esc(x)}</li>" for x in d[key]) + "</ul>")
+    # 6. Tableau des contrôles
+    if ctrl:
+        icon = lambda s: ("✅ " if str(s).lower().startswith(("✅", "conforme", "ok")) else
+                          "❌ " if str(s).lower().startswith(("❌", "probl")) else
+                          "◻️ " if str(s).lower().startswith(("◻", "non v", "nv")) else "") + esc(s).lstrip("✅❌◻️ ")
+        rows = "".join(f"<tr><td>{esc(c.get('id'))}</td><td>{esc(c.get('point'))}</td><td>{icon(c.get('statut', ''))}</td>"
+                       f"<td>{esc(c.get('note'))}</td></tr>" for c in ctrl)
+        parts.append('<h2>Tableau des contrôles</h2><table><thead><tr><th>#</th><th>Point</th><th>Statut</th><th>Note</th></tr>'
+                     f"</thead><tbody>{rows}</tbody></table>")
+    # 7. Confiance
+    if d.get("confiance"):
+        parts.append(f'<h2>Niveau de confiance</h2><p>{esc(d["confiance"])}</p>')
+    # 8. Plan d'action
+    plan = d.get("plan_action") or d.get("prochaines_etapes")
+    if plan:
+        if isinstance(plan[0], dict):
+            rows = "".join(f"<tr><td>{i}</td><td>{esc(a.get('action'))}</td><td>{esc(a.get('priorite'))}</td>"
+                           f"<td>{esc(a.get('effort'))}</td><td>{esc(a.get('groupe'))}</td></tr>" for i, a in enumerate(plan, 1))
+            parts.append("<h2>Plan d'action priorisé</h2><table><thead><tr><th>#</th><th>Action</th><th>Priorité</th>"
+                         f"<th>Effort</th><th>Groupe</th></tr></thead><tbody>{rows}</tbody></table>")
+        else:
+            parts.append("<h2>Plan d'action priorisé</h2>" + ul(plan))
+    # 9-10. Données complémentaires, conclusion
+    if d.get("donnees_complementaires"):
+        parts.append("<h2>Données complémentaires utiles</h2>" + ul(d["donnees_complementaires"]))
+    if d.get("conclusion"):
+        parts.append(f'<h2>Conclusion</h2><p>{esc(d["conclusion"])}</p>')
+    if d.get("hors_perimetre"):
+        parts.append("<h2>🔎 Repéré hors périmètre</h2>" + ul(d["hors_perimetre"]))
+    if d.get("limites"):
+        parts.append("<h2>Limites et ce qui n'a pas été vérifié</h2>" + ul(d["limites"]))
     parts.append(f"<footer>Compte rendu généré le {date.today().isoformat()}. Statuts : [Mesuré] outil ou fichier · "
-                 "[Observé] vu sur la page ou la capture · [Estimé] calcul explicité · [Hypothèse] non vérifié.</footer>")
+                 "[Observé] vu sur la page ou la capture · [Déduit] raisonnement sur des faits cités · [Hypothèse] non vérifié.</footer>")
 
     page = (f'<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f"<title>{esc(d.get('titre', 'Compte rendu'))}</title><style>{CSS}</style></head><body><main>{''.join(parts)}</main></body></html>")
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     with open(out, "w", encoding="utf-8") as f:
         f.write(page)
-    print(f"Compte rendu : {os.path.abspath(out)}  ({len(ok)} points OK, {len(ko)} problèmes dont {n_h} prioritaires)")
+    print(f"Compte rendu : {os.path.abspath(out)}  ({len(ok)} points OK, {len(ko)} problèmes dont {n_h} prioritaires, "
+          f"{os.path.getsize(out) // 1024} Ko)")
 
 
 if __name__ == "__main__":

@@ -84,6 +84,7 @@ Interdits : conseils vagues (« améliorer l'UX », « moderniser », « optimis
 5. Toute modification d'URL, de canonical, de robots ou de masse exige une validation humaine explicite, avec plan de test et de retour arrière.
 
 ## 9. Compte rendu (tout audit ou vérification)
+Pour un audit ou une vérification, la skill `audit-digital` fixe le périmètre (UX, CRO ou UX/CRO), la liste de contrôles et le format complet ; les règles ci-dessous s'appliquent dans tous les cas.
 Toute demande d'audit, d'analyse ou de vérification se termine par un compte rendu : audit complet (site, page) ou point précis (rendu JavaScript, balises, indexation, maillage, formulaire, vitesse…), **même si tout va bien**. Structure fixe :
 1. **En-tête** : type de compte rendu, page(s), date, mode, sources, périmètre (ce qui a été vérifié et ce qui ne l'a pas été).
 2. **Verdict** en une ou deux phrases : état général et priorité n° 1.
@@ -100,6 +101,6 @@ Si Playwright est installé (`py -m pip install playwright` puis `py -m playwrig
 - Avant de modifier le code d'une page : un relevé, puis après modification un second relevé avec `--baseline <dossier du premier>` → titres, liens internes et contenu perdus sont signalés.
 - Sans Playwright : le dire et demander des captures.
 Modèles : `templates/compte-rendu.json` (compte rendu) et `templates/action-plan.csv` (plan d'action, colonne `seo_risk`).
-- **Rendu JavaScript** : ajouter `--js` → capture `desktop_sans_js.png` et comparaison sans JS / après JS (texte, Hn, liens, title, canonical, meta robots). Joindre au compte rendu la capture sans JavaScript ET la capture après JavaScript, que le résultat soit bon ou mauvais.
+- **Rendu JavaScript** : ajouter `--js` → captures `desktop_sans_js.jpg` et `mobile_sans_js.jpg` et comparaison sans JS / après JS (texte, Hn, liens, title, canonical, meta robots). Joindre au compte rendu les captures sans JavaScript ET après JavaScript (desktop et mobile), que le résultat soit bon ou mauvais.
 
 **Compte rendu (terminal)** : copier `templates/compte-rendu.json` dans `deliverables/AAAA-MM-JJ_<projet>_<type>.json`, le remplir (captures = chemins des PNG produits par `ux_snapshot.py`, relatifs au dossier du JSON), puis lancer `py .claude/skills/seo-strategie/scripts/rapport.py deliverables/<fichier>.json` → page HTML autonome, captures intégrées. Donner à l'utilisateur le chemin du HTML (il s'ouvre d'un double-clic) et un résumé de 3 lignes : verdict, nombre de points OK, problèmes prioritaires.

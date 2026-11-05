@@ -11,7 +11,7 @@ Pour chaque page et chaque appareil (desktop 1440×900, mobile iPhone 13) :
   LCP et CLS mesurés en laboratoire (indicatifs, ≠ données terrain CrUX/Search Console).
 - --js : vérifie le rendu JavaScript. Compare la page SANS JavaScript (HTML servi, ce que tout
   robot lit immédiatement) et la page rendue (title, canonical, meta robots, Hn, liens internes, mots)
-  et prend une capture desktop sans JavaScript (desktop_sans_js.png) comme preuve.
+  et prend des captures desktop et mobile sans JavaScript (desktop_sans_js.jpg, mobile_sans_js.jpg) comme preuves.
 - --baseline : compare avec un relevé précédent (Hn, liens internes, nombre de mots) pour
   vérifier qu'une modification n'a rien retiré d'important pour le SEO.
 
@@ -19,7 +19,8 @@ Exemples :
   py ux_snapshot.py https://exemple.com/page -o data/clean/ux/2026-11-05
   py ux_snapshot.py https://exemple.com/page -o data/clean/ux/2026-11-05 --js
   py ux_snapshot.py https://exemple.com/a https://exemple.com/b -o data/clean/ux/apres --baseline data/clean/ux/avant
-Sorties : <dossier>/<page>/{desktop,mobile}_{ecran,complet}.png, rapport.json, et <dossier>/rapport.md
+Sorties : <dossier>/<page>/{desktop,mobile}_{ecran,complet}.jpg (+ *_sans_js.jpg avec --js), rapport.json,
+et <dossier>/rapport.md. Captures en JPEG pour des comptes rendus légers.
 """
 import argparse
 import json
@@ -174,19 +175,29 @@ class RawParse(HTMLParser):
             self._h[1].append(data)
 
 
-def js_check(browser, url, pdir, rendered, timeout):
-    """Compare la page sans JavaScript et la page rendue (desktop). Retourne (constats, tableau, données)."""
+def js_check(browser, url, pdir, rendered, timeout, mobile_opts=None):
+    """Compare la page sans JavaScript et la page rendue (desktop) ; captures desktop et mobile sans JavaScript.
+    Retourne (constats, tableau, données)."""
     ctx = browser.new_context(locale="fr-FR", viewport={"width": 1440, "height": 900}, java_script_enabled=False)
     page = ctx.new_page()
     try:
         page.goto(url, wait_until="load", timeout=timeout)
-        page.screenshot(path=os.path.join(pdir, "desktop_sans_js.png"))
-        page.screenshot(path=os.path.join(pdir, "desktop_sans_js_complet.png"), full_page=True)
+        page.screenshot(path=os.path.join(pdir, "desktop_sans_js.jpg"), type="jpeg", quality=78)
+        page.screenshot(path=os.path.join(pdir, "desktop_sans_js_complet.jpg"), full_page=True, type="jpeg", quality=60)
         raw_html = page.content()
     except Exception as e:
         ctx.close()
         return [f"❌ Page sans JavaScript non chargée : {str(e)[:200]}"], None, {}
     ctx.close()
+    if mobile_opts:
+        mctx = browser.new_context(locale="fr-FR", java_script_enabled=False, **mobile_opts)
+        mpage = mctx.new_page()
+        try:
+            mpage.goto(url, wait_until="load", timeout=timeout)
+            mpage.screenshot(path=os.path.join(pdir, "mobile_sans_js.jpg"), type="jpeg", quality=78)
+        except Exception:
+            pass
+        mctx.close()
     rp = RawParse(url)
     rp.feed(raw_html)
     raw = {"title": " ".join(rp.title.split()), "canonical": rp.canonical, "robots": rp.robots,
@@ -238,12 +249,13 @@ def audit(ctx, url, outdir, mobile, timeout, vw):
             page.wait_for_load_state("networkidle", timeout=8000)
         except Exception:
             pass
-        page.screenshot(path=os.path.join(outdir, f"{'mobile' if mobile else 'desktop'}_ecran.png"))
+        page.screenshot(path=os.path.join(outdir, f"{'mobile' if mobile else 'desktop'}_ecran.jpg"), type="jpeg", quality=78)
         # défiler pour déclencher le lazy-loading et mesurer les décalages pendant le scroll
         page.evaluate("""async () => { for (let y = 0; y < document.body.scrollHeight; y += window.innerHeight * 0.8) {
                           window.scrollTo(0, y); await new Promise(r => setTimeout(r, 150)); } window.scrollTo(0, 0); }""")
         page.wait_for_timeout(500)
-        page.screenshot(path=os.path.join(outdir, f"{'mobile' if mobile else 'desktop'}_complet.png"), full_page=True)
+        page.screenshot(path=os.path.join(outdir, f"{'mobile' if mobile else 'desktop'}_complet.jpg"), full_page=True,
+                        type="jpeg", quality=60)
         data = page.evaluate(AUDIT_JS, [mobile, vw])
     except Exception as e:
         data = {"erreur": str(e)[:300]}
@@ -334,9 +346,9 @@ def main():
                     report.append(f"- Title : {d['title']!r} · mots du contenu : {d['words']} · liens internes : "
                                   f"{len(d['internal_links'])} · LCP labo : {d['lab_lcp_ms']} ms · CLS labo : {d['lab_cls']}")
                     report.append("- Liens et boutons du premier écran : " + (" | ".join(d["links_buttons_first_screen"]) or "aucun"))
-                    report.append(f"- Captures : `{pdir}/{name}_ecran.png`, `{pdir}/{name}_complet.png`")
+                    report.append(f"- Captures : `{pdir}/{name}_ecran.jpg`, `{pdir}/{name}_complet.jpg`")
             if args.js and "erreur" not in result.get("desktop", {"erreur": 1}):
-                found, table, extra = js_check(browser, target, pdir, result["desktop"], args.timeout * 1000)
+                found, table, extra = js_check(browser, target, pdir, result["desktop"], args.timeout * 1000, devices[1][1])
                 result["js"] = {"constats": found, "tableau": table, **extra}
                 report.append("### Rendu JavaScript")
                 report += [f"- {i}" for i in found]
@@ -344,8 +356,8 @@ def main():
                     report.append("| " + " | ".join(table["colonnes"]) + " |")
                     report.append("|" + "---|" * len(table["colonnes"]))
                     report += ["| " + " | ".join(str(c) for c in row) + " |" for row in table["lignes"]]
-                    report.append(f"- Preuve : `{pdir}/desktop_sans_js.png` (sans JavaScript) à comparer avec "
-                                  f"`{pdir}/desktop_ecran.png` (rendu)")
+                    report.append(f"- Preuves : `{pdir}/desktop_sans_js.jpg` et `{pdir}/mobile_sans_js.jpg` (sans JavaScript) "
+                                  f"à comparer avec `{pdir}/desktop_ecran.jpg` et `{pdir}/mobile_ecran.jpg` (rendu)")
             if args.baseline:
                 bfile = os.path.join(args.baseline, slug(target), "rapport.json")
                 if os.path.exists(bfile):

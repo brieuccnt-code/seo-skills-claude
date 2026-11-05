@@ -94,6 +94,7 @@ Score indicatif : (impact × confiance) / effort, notés 1 à 3, ajusté par le 
 Plan d'action : action, catégorie, URL ou périmètre, problème, preuve, impact, confiance, effort, risque, risque SEO, priorité, responsable, indicateur de succès, statut. En tête : résumé de 5 à 10 lignes (situation, 3 priorités, ce qui manque).
 
 ## 12. Compte rendu (tout audit ou vérification)
+Pour un audit ou une vérification, la skill `audit-digital` fixe le périmètre, la liste de contrôles et le format complet ; les règles ci-dessous s'appliquent dans tous les cas.
 Toute demande d'audit, d'analyse ou de vérification se termine par un compte rendu : audit complet (site, page) ou point précis (rendu JavaScript, balises, indexation, maillage, formulaire, vitesse…), **même si tout va bien**. Structure fixe :
 1. **En-tête** : type de compte rendu, page(s), date, mode, sources, périmètre (ce qui a été vérifié et ce qui ne l'a pas été).
 2. **Verdict** en une ou deux phrases : état général et priorité n° 1.
@@ -111,7 +112,7 @@ Quand Claude Code est lancé depuis la racine du pack, utiliser ces scripts plut
 | Nettoyer un export Keyword Planner (FR/EN, UTF-16) | `py .claude/skills/seo-strategie/scripts/kp_clean.py data/raw/<export>.csv -o data/clean/kp_clean.csv --country FR --language fr` | CSV normalisé : fourchettes, quasi-doublons, mois de pic, indice de saisonnalité |
 | Clustering par SERP (§ 5) | `py .claude/skills/seo-strategie/scripts/serp_cluster.py data/raw/<serp>.csv --volumes data/clean/kp_clean.csv --threshold 3 -o data/clean/clusters` | `clusters.csv`, `clusters_resume.csv`, `cas_limites.csv` |
 | Analyse Search Console (§ 6 et 9) | `py .claude/skills/seo-strategie/scripts/gsc_analyze.py data/raw/<gsc>.csv [--previous data/raw/<avant>.csv] -o data/clean/gsc` | `synthese.txt`, `gains_rapides_position.csv`, `ctr_faible.csv`, `cannibalisation.csv`, `pages.csv`, `evolution_pages.csv` |
-| Captures desktop/mobile, rendu JavaScript (§ 10, § 12) | `py .claude/skills/ux-cro/scripts/ux_snapshot.py <url> -o data/clean/ux/AAAA-MM-JJ --js` (Playwright) | captures `desktop_ecran.png`, `mobile_ecran.png`, `desktop_sans_js.png`, `rapport.md`, `rapport.json` |
+| Captures desktop/mobile, rendu JavaScript (§ 10, § 12) | `py .claude/skills/ux-cro/scripts/ux_snapshot.py <url> -o data/clean/ux/AAAA-MM-JJ --js` (Playwright) | captures `desktop_ecran.jpg`, `mobile_ecran.jpg`, `desktop_sans_js.jpg`, `mobile_sans_js.jpg`, `rapport.md`, `rapport.json` |
 | Compte rendu HTML (§ 12) | `py .claude/skills/seo-strategie/scripts/rapport.py deliverables/<fichier>.json` | page HTML avec captures, ✅ / ❌ |
 | Maillage et cocon (§ 7 et 8) | `py .claude/skills/seo-strategie/scripts/link_graph.py --links data/raw/<inlinks>.csv [--cocon deliverables/<cocon-map>.csv] --home https://exemple.com/ -o data/clean/cocon-audit` | `pages.csv` (liens entrants, profondeur, orphelines), `ancres_repetees.csv`, `liens_manquants.csv`, `liens_sortants_hors_cocon.csv` |
 
