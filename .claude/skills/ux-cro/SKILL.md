@@ -83,19 +83,23 @@ Interdits : conseils vagues (« améliorer l'UX », « moderniser », « optimis
 4. Après modification : accessibilité, performances, liens et interactions, et absence de régression SEO. Relever avant toute modification la liste des Hn, des liens internes et le nombre de mots, puis comparer après : rien d'important ne doit avoir disparu.
 5. Toute modification d'URL, de canonical, de robots ou de masse exige une validation humaine explicite, avec plan de test et de retour arrière.
 
-## 9. Livrable
-1. **Périmètre** : pages, conversion principale, cible, éléments vus (captures, HTML, données) et non vus, contraintes SEO.
-2. **Diagnostic général** : points forts, problèmes principaux.
-3. **Problèmes identifiés** : constat [statut], problème utilisateur, conséquence commerciale, confiance.
-4. **Recommandations prioritaires** : modification précise, justification, bénéfice, impact SEO, risque SEO, priorité, effort.
-5. **Améliorations secondaires**.
-6. **Plan d'action** dans un ordre logique de mise en œuvre.
-7. **Vérifications après modification** : UX desktop et mobile, SEO (Hn, contenu, liens, balises), Core Web Vitals, accessibilité, mesure avant/après datée.
-Pour la stratégie SEO globale, s'appuyer sur la skill `seo-strategie` ; pour réécrire un contenu, sur `redaction-seo`.
+## 9. Compte rendu (tout audit ou vérification)
+Toute demande d'audit, d'analyse ou de vérification se termine par un compte rendu : audit complet (site, page) ou point précis (rendu JavaScript, balises, indexation, maillage, formulaire, vitesse…), **même si tout va bien**. Structure fixe :
+1. **En-tête** : type de compte rendu, page(s), date, mode, sources, périmètre (ce qui a été vérifié et ce qui ne l'a pas été).
+2. **Verdict** en une ou deux phrases : état général et priorité n° 1.
+3. **Preuves visuelles** dès qu'une page est concernée : capture **desktop** et capture **mobile** ; pour le rendu JavaScript, capture **sans JavaScript** et capture **après JavaScript**. Les joindre que le problème soit confirmé ou non : elles prouvent aussi que tout va bien.
+4. **✅ Ce qui va bien** : chaque point vérifié et conforme, avec sa preuve. Un contrôle réussi est un résultat : ne jamais laisser cette partie vide par omission.
+5. **❌ Problèmes à régler** : triés par priorité (haute, moyenne, basse) ; pour chacun : constat, preuve, statut ([Mesuré], [Observé], [Hypothèse]), impact, effort, risque SEO, recommandation précise.
+6. **Limites et prochaines étapes** : ce qui n'a pas pu être vérifié et comment le vérifier.
+Un point non vérifié ne va ni dans ✅ ni dans ❌ : il va dans les limites. Sans outil de capture, le dire dans les limites et demander à l'utilisateur ses captures desktop et mobile. Si l'utilisateur veut garder ou partager le compte rendu, proposer d'en faire un document.
+Pour un audit UX/CRO : chaque problème suit le format du § 7 ; le compte rendu se termine par le plan d'action (ordre de mise en œuvre) et les vérifications après modification (UX desktop et mobile, SEO, Core Web Vitals, accessibilité, mesure avant/après datée). Pour la stratégie SEO globale, s'appuyer sur la skill `seo-strategie` ; pour réécrire un contenu, sur `redaction-seo`.
 
 ## 10. Outils dans le terminal (Claude Code)
 Si Playwright est installé (`py -m pip install playwright` puis `py -m playwright install chromium`) :
 - `py .claude/skills/ux-cro/scripts/ux_snapshot.py <url1> [<url2>…] -o data/clean/ux/AAAA-MM-JJ` → captures desktop et mobile (premier écran et page entière) et contrôles automatiques : débordement horizontal, zones tactiles < 24px, images sans dimensions, image du premier écran en lazy-loading, texte trop petit, H1, plan des Hn, liens internes, mots du contenu rendu, LCP et CLS de laboratoire. **Regarder les captures** avant de conclure : les contrôles ne remplacent pas l'analyse.
 - Avant de modifier le code d'une page : un relevé, puis après modification un second relevé avec `--baseline <dossier du premier>` → titres, liens internes et contenu perdus sont signalés.
 - Sans Playwright : le dire et demander des captures.
-Modèles : `templates/ux-cro-audit.md` et `templates/action-plan.csv` (colonne `seo_risk`).
+Modèles : `templates/compte-rendu.json` (compte rendu) et `templates/action-plan.csv` (plan d'action, colonne `seo_risk`).
+- **Rendu JavaScript** : ajouter `--js` → capture `desktop_sans_js.png` et comparaison sans JS / après JS (texte, Hn, liens, title, canonical, meta robots). Joindre au compte rendu la capture sans JavaScript ET la capture après JavaScript, que le résultat soit bon ou mauvais.
+
+**Compte rendu (terminal)** : copier `templates/compte-rendu.json` dans `deliverables/AAAA-MM-JJ_<projet>_<type>.json`, le remplir (captures = chemins des PNG produits par `ux_snapshot.py`, relatifs au dossier du JSON), puis lancer `py .claude/skills/seo-strategie/scripts/rapport.py deliverables/<fichier>.json` → page HTML autonome, captures intégrées. Donner à l'utilisateur le chemin du HTML (il s'ouvre d'un double-clic) et un résumé de 3 lignes : verdict, nombre de points OK, problèmes prioritaires.

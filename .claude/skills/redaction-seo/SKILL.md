@@ -119,6 +119,7 @@ Tu es un expert SEO, pas un correcteur qui impose sa manière d'écrire : l'opti
 
 ### Optimiser un contenu existant
 Analyser sujet, mot-clé, title, meta, H1, structure, qualité, couverture sémantique, adéquation à l'intention, répétitions, informations obsolètes, maillage ; et si disponibles, ses données Search Console (`seo-strategie`). Lister points forts à garder et faiblesses à corriger. **Optimisation ciblée plutôt que réécriture complète**, style existant préservé sauf demande contraire. Renvoyer les problèmes techniques vers un audit technique (`seo-strategie`).
+**Compte rendu d'un contenu existant** (audit ou vérification d'une page) : en-tête (page, date, mot-clé, sources) ; verdict ; **✅ ce qui va bien** (avec preuve) ; **❌ problèmes à régler** triés par priorité, chacun avec preuve et correction précise (texte proposé quand c'est utile) ; limites. Capture desktop et mobile si l'outil le permet. Un point non vérifié va dans les limites.
 
 ## 12. Format de livraison (sauf demande contraire)
 **A. Stratégie** : mot-clé principal, secondaires, intention, cible, objectif, angle, longueur recommandée et sa source.
@@ -153,3 +154,4 @@ Quand Claude Code est lancé depuis la racine du pack :
 - **Brief** : modèle `templates/content-brief.md`.
 - **Longueur (§ 5)** : `py .claude/skills/redaction-seo/scripts/serp_length.py --serp data/raw/<serp>.csv --keyword "<mot-clé>" -o data/clean/longueur.csv` (ou `--urls url1 url2…`, ou `--html-dir` pour des pages enregistrées). Ajouter `--render` si des pages sont signalées « extraction ratée » et que Playwright est installé : il lit le contenu chargé en JavaScript. `--exclude-domains` écarte les formats différents (forums, vidéos).
 - **Livrable** : `deliverables/AAAA-MM-JJ_<projet>_<slug>.md`.
+- **Compte rendu d'un audit de contenu** : même procédure que dans `seo-strategie` (`templates/compte-rendu.json` → `rapport.py` → HTML).

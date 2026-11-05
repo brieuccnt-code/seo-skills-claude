@@ -17,6 +17,7 @@ Les mêmes 4 skills existent sur le compte Claude (application et claude.ai) ; i
 - **Preuves** : chaque chiffre ou constat porte [Mesuré], [Observé], [Estimé], [Hypothèse] ou [Recommandation]. Ne jamais inventer un volume, une position, un trafic, un avis, une source. Ne jamais prétendre avoir vérifié ce qui ne l'a pas été.
 - **Validation humaine** avant toute publication, suppression, redirection, canonical, noindex, robots.txt, migration, changement d'URL ou modification de masse.
 - **Données** : vérifier ce qui existe dans `data/raw/` avant toute recommandation chiffrée ; s'il manque un export, dire lequel fournir (outil, filtres, période, colonnes). Au-delà d'une trentaine de lignes, calculer avec un script.
+- **Comptes rendus** : tout audit ou toute vérification, complet ou ciblé, se termine par un compte rendu **✅ Ce qui va bien / ❌ Problèmes à régler**, avec preuves et captures desktop + mobile dès qu'une page est concernée (sans JS + après JS pour le rendu JavaScript). Format HTML via `rapport.py` (procédure dans `seo-strategie` § 12 et § 13) ; donner le chemin du fichier.
 - **Fin de chaque livrable** : sources et dates, hypothèses, données manquantes, prochaines vérifications.
 
 ## Organisation du dossier

@@ -9,11 +9,15 @@ Pour chaque page et chaque appareil (desktop 1440×900, mobile iPhone 13) :
   dimensions (risque CLS), image du premier écran en lazy-loading (risque LCP), texte trop petit
   sur mobile, meta viewport, title, H1, plan des Hn, liens internes, mots du contenu rendu,
   LCP et CLS mesurés en laboratoire (indicatifs, ≠ données terrain CrUX/Search Console).
+- --js : vérifie le rendu JavaScript. Compare la page SANS JavaScript (HTML servi, ce que tout
+  robot lit immédiatement) et la page rendue (title, canonical, meta robots, Hn, liens internes, mots)
+  et prend une capture desktop sans JavaScript (desktop_sans_js.png) comme preuve.
 - --baseline : compare avec un relevé précédent (Hn, liens internes, nombre de mots) pour
   vérifier qu'une modification n'a rien retiré d'important pour le SEO.
 
 Exemples :
   py ux_snapshot.py https://exemple.com/page -o data/clean/ux/2026-11-05
+  py ux_snapshot.py https://exemple.com/page -o data/clean/ux/2026-11-05 --js
   py ux_snapshot.py https://exemple.com/a https://exemple.com/b -o data/clean/ux/apres --baseline data/clean/ux/avant
 Sorties : <dossier>/<page>/{desktop,mobile}_{ecran,complet}.png, rapport.json, et <dossier>/rapport.md
 """
@@ -23,8 +27,9 @@ import os
 import re
 import sys
 from datetime import datetime
+from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urljoin, urlsplit
 
 try:
     from playwright.sync_api import sync_playwright
@@ -98,6 +103,8 @@ AUDIT_JS = r"""
   const ctas = [...document.querySelectorAll('a[href], button')].filter(el => vis(el) && el.getBoundingClientRect().top < vh)
       .map(el => (el.innerText || el.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ')).filter(t => t).slice(0, 15);
   return {
+    canonical: (document.querySelector('link[rel=canonical]') || {}).href || '',
+    robots: (document.querySelector('meta[name=robots]') || {}).content || '',
     title: document.title, viewport_meta: !!document.querySelector('meta[name=viewport]'),
     h1_count: document.querySelectorAll('h1').length, headings, internal_links: [...internal].sort(),
     words, overflow_px: Math.max(0, docW - vw), overflow, small_targets: small.slice(0, 15), small_targets_total: small.length,
@@ -107,6 +114,111 @@ AUDIT_JS = r"""
   };
 }
 """
+
+
+WORD = re.compile(r"[^\W\d_]+(?:['’-][^\W\d_]+)*|\d+(?:[.,]\d+)*", re.UNICODE)
+
+
+class RawParse(HTMLParser):
+    """Lecture du HTML sans exécution de JavaScript : ce que les robots reçoivent avant le rendu."""
+    SKIP = {"script", "style", "noscript", "template", "svg"}
+
+    def __init__(self, base):
+        super().__init__(convert_charrefs=True)
+        self.base, self.host = base, urlsplit(base).netloc.lower().removeprefix("www.")
+        self.title, self.canonical, self.robots = "", "", ""
+        self.headings, self.links, self.text = [], set(), []
+        self._skip, self._in_title, self._h = 0, False, None
+        self._main, self.main_text = 0, []
+
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        if tag in ("main", "article"):
+            self._main += 1
+        if tag in self.SKIP:
+            self._skip += 1
+        elif tag == "title":
+            self._in_title = True
+        elif tag == "link" and "canonical" in (a.get("rel") or "").lower():
+            self.canonical = urljoin(self.base, a.get("href") or "")
+        elif tag == "meta" and (a.get("name") or "").lower() == "robots":
+            self.robots = a.get("content") or ""
+        elif tag in ("h1", "h2", "h3", "h4"):
+            self._h = [tag.upper(), []]
+        elif tag == "a" and a.get("href"):
+            u = urlsplit(urljoin(self.base, a["href"]))
+            if u.scheme in ("http", "https", "file") and u.netloc.lower().removeprefix("www.") == self.host:
+                self.links.add(f"{u.scheme}://{u.netloc}{u.path}")
+
+    def handle_endtag(self, tag):
+        if tag in ("main", "article"):
+            self._main = max(0, self._main - 1)
+        if tag in self.SKIP:
+            self._skip = max(0, self._skip - 1)
+        elif tag == "title":
+            self._in_title = False
+        elif self._h and tag == self._h[0].lower():
+            txt = " ".join(" ".join(self._h[1]).split())[:90]
+            self.headings.append(f"{self._h[0]}: {txt}")
+            self._h = None
+
+    def handle_data(self, data):
+        if self._in_title:
+            self.title += data
+        if self._skip:
+            return
+        self.text.append(data)
+        if self._main:
+            self.main_text.append(data)
+        if self._h:
+            self._h[1].append(data)
+
+
+def js_check(browser, url, pdir, rendered, timeout):
+    """Compare la page sans JavaScript et la page rendue (desktop). Retourne (constats, tableau, données)."""
+    ctx = browser.new_context(locale="fr-FR", viewport={"width": 1440, "height": 900}, java_script_enabled=False)
+    page = ctx.new_page()
+    try:
+        page.goto(url, wait_until="load", timeout=timeout)
+        page.screenshot(path=os.path.join(pdir, "desktop_sans_js.png"))
+        page.screenshot(path=os.path.join(pdir, "desktop_sans_js_complet.png"), full_page=True)
+        raw_html = page.content()
+    except Exception as e:
+        ctx.close()
+        return [f"❌ Page sans JavaScript non chargée : {str(e)[:200]}"], None, {}
+    ctx.close()
+    rp = RawParse(url)
+    rp.feed(raw_html)
+    raw = {"title": " ".join(rp.title.split()), "canonical": rp.canonical, "robots": rp.robots,
+           "headings": rp.headings, "internal_links": sorted(rp.links), "words": len(WORD.findall(" ".join(rp.main_text or rp.text)))}
+    rend = {k: rendered.get(k) for k in ("title", "canonical", "robots", "headings", "internal_links", "words")}
+    out = []
+    missing_h = [h for h in rend["headings"] or [] if h not in raw["headings"]]
+    missing_l = sorted(set(rend["internal_links"] or []) - set(raw["internal_links"]))
+    rw, ww = raw["words"], rend["words"] or 0
+    ratio = rw / ww if ww else 1
+    if ratio < 0.8:
+        out.append(f"❌ {100 - ratio * 100:.0f} % du texte n'existe qu'après exécution du JavaScript ({rw} mots sans JS, {ww} avec)")
+    if missing_h:
+        out.append(f"❌ {len(missing_h)} titre(s) absent(s) sans JavaScript : " + " ; ".join(missing_h[:5]))
+    if missing_l:
+        out.append(f"⚠️ {len(missing_l)} lien(s) interne(s) absent(s) sans JavaScript : " + " ; ".join(missing_l[:5]))
+    if (raw["title"] or "") != (rend["title"] or ""):
+        out.append(f"⚠️ Title différent sans JavaScript : {raw['title']!r} → {rend['title']!r}")
+    if (raw["canonical"] or "") != (rend["canonical"] or ""):
+        out.append(f"❌ Canonical différente ou absente sans JavaScript : {raw['canonical'] or '(aucune)'} → {rend['canonical'] or '(aucune)'}")
+    if (raw["robots"] or "").lower() != (rend["robots"] or "").lower():
+        out.append(f"❌ Meta robots modifiée par JavaScript : {raw['robots'] or '(aucune)'} → {rend['robots'] or '(aucune)'}")
+    if not out:
+        out.append(f"✅ Contenu, titres, liens, title, canonical et meta robots présents sans JavaScript ({rw} mots sur {ww})")
+    table = {"titre": "Rendu JavaScript : page sans JS vs page rendue (desktop)",
+             "colonnes": ["Élément", "Sans JavaScript", "Après JavaScript"],
+             "lignes": [["Mots du texte", rw, ww], ["Titres H1–H4", len(raw["headings"]), len(rend["headings"] or [])],
+                        ["Liens internes", len(raw["internal_links"]), len(rend["internal_links"] or [])],
+                        ["Title", raw["title"] or "(aucun)", rend["title"] or "(aucun)"],
+                        ["Canonical", raw["canonical"] or "(aucune)", rend["canonical"] or "(aucune)"],
+                        ["Meta robots", raw["robots"] or "(aucune)", rend["robots"] or "(aucune)"]]}
+    return out, table, {"sans_js": raw, "titres_manquants": missing_h, "liens_manquants": missing_l}
 
 
 def slug(url):
@@ -194,6 +306,7 @@ def main():
     ap.add_argument("-o", "--outdir", required=True)
     ap.add_argument("--baseline", help="dossier d'un relevé précédent du même script, pour comparaison")
     ap.add_argument("--timeout", type=int, default=45, help="secondes par page")
+    ap.add_argument("--js", action="store_true", help="vérifier le rendu JavaScript (capture sans JS + comparaison)")
     args = ap.parse_args()
     os.makedirs(args.outdir, exist_ok=True)
 
@@ -222,6 +335,17 @@ def main():
                                   f"{len(d['internal_links'])} · LCP labo : {d['lab_lcp_ms']} ms · CLS labo : {d['lab_cls']}")
                     report.append("- Liens et boutons du premier écran : " + (" | ".join(d["links_buttons_first_screen"]) or "aucun"))
                     report.append(f"- Captures : `{pdir}/{name}_ecran.png`, `{pdir}/{name}_complet.png`")
+            if args.js and "erreur" not in result.get("desktop", {"erreur": 1}):
+                found, table, extra = js_check(browser, target, pdir, result["desktop"], args.timeout * 1000)
+                result["js"] = {"constats": found, "tableau": table, **extra}
+                report.append("### Rendu JavaScript")
+                report += [f"- {i}" for i in found]
+                if table:
+                    report.append("| " + " | ".join(table["colonnes"]) + " |")
+                    report.append("|" + "---|" * len(table["colonnes"]))
+                    report += ["| " + " | ".join(str(c) for c in row) + " |" for row in table["lignes"]]
+                    report.append(f"- Preuve : `{pdir}/desktop_sans_js.png` (sans JavaScript) à comparer avec "
+                                  f"`{pdir}/desktop_ecran.png` (rendu)")
             if args.baseline:
                 bfile = os.path.join(args.baseline, slug(target), "rapport.json")
                 if os.path.exists(bfile):

@@ -1,11 +1,11 @@
 # Pack SEO expert pour Claude Code
 
-4 skills, 6 scripts et des modèles de livrables pour faire de Claude un consultant SEO senior qui travaille selon tes règles.
+4 skills, 7 scripts et des modèles de livrables pour faire de Claude un consultant SEO senior qui travaille selon tes règles.
 
 ## Les 4 skills
 | Skill | Contenu | Scripts |
 |---|---|---|
-| `seo-strategie` | Socle, modes création / optimisation, mots-clés, intention, clustering, mapping, cannibalisation, cocon, maillage, Search Console, audit et technique | `kp_clean.py`, `serp_cluster.py`, `gsc_analyze.py`, `link_graph.py` |
+| `seo-strategie` | Socle, modes création / optimisation, mots-clés, intention, clustering, mapping, cannibalisation, cocon, maillage, Search Console, audit et technique | `kp_clean.py`, `serp_cluster.py`, `gsc_analyze.py`, `link_graph.py`, `rapport.py` |
 | `redaction-seo` | Charte de rédaction : style et ton, title ≠ H1, plan, longueur mesurée sur la SERP, livraison, checklist | `serp_length.py` |
 | `ux-cro` | UX et conversion sous contrainte SEO, tests A/B sans risque SEO | `ux_snapshot.py` (Playwright) |
 | `seo-editorial` | Affiliation et transparence, comparatifs, politiques anti-spam Google, GEO, calendrier saisonnier | — |
@@ -23,6 +23,9 @@ Les mêmes 4 skills sont enregistrées sur le compte Claude (application et clau
 2. Remplir `references/CHARTE-EDITORIALE.md`, ou laisser Claude poser les questions au premier contenu.
 3. Déposer les exports dans `data/raw/` puis demander en langage naturel : « analyse mon export Search Console », « fais le clustering », « écris un article sur… », « audit UX de cette page ».
 
+## Comptes rendus
+Tout audit ou toute vérification (site, page ou point précis comme le rendu JavaScript) se termine par un compte rendu HTML dans `deliverables/` : verdict, captures desktop et mobile, **✅ ce qui va bien**, **❌ problèmes à régler** triés par priorité, limites. Il s'ouvre d'un double-clic dans le navigateur.
+
 ## Scripts
 | Script | Entrée | Ce qu'il produit |
 |---|---|---|
@@ -31,6 +34,7 @@ Les mêmes 4 skills sont enregistrées sur le compte Claude (application et clau
 | `seo-strategie/scripts/gsc_analyze.py` | export GSC requête × page (+ période précédente) | gains rapides, CTR faibles, cannibalisation, évolution |
 | `seo-strategie/scripts/link_graph.py` | export des liens internes (+ carte du cocon) | orphelines, profondeur, liens obligatoires manquants, liens hors cocon, ancres répétées |
 | `redaction-seo/scripts/serp_length.py` | URL du top 10 | longueur du contenu principal, fourchette recommandée (`--render` pour le JavaScript) |
-| `ux-cro/scripts/ux_snapshot.py` | URL | captures desktop/mobile, contrôles UX, comparaison avant/après (`--baseline`) |
+| `ux-cro/scripts/ux_snapshot.py` | URL | captures desktop/mobile, contrôles UX, rendu JavaScript (`--js`), comparaison avant/après (`--baseline`) |
+| `seo-strategie/scripts/rapport.py` | compte rendu JSON (`templates/compte-rendu.json`) | compte rendu HTML : verdict, captures, ✅ ce qui va bien / ❌ problèmes à régler |
 
 Les données de `data/` et les livrables de `deliverables/` ne sont jamais envoyés sur GitHub (`.gitignore`).

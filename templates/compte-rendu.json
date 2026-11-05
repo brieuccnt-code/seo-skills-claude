@@ -1,0 +1,27 @@
+{
+  "titre": "Audit UX — page d'accueil",
+  "type": "UX/CRO",
+  "url": "https://exemple.com/",
+  "date": "2026-11-05",
+  "mode": "optimisation",
+  "sources": ["Captures et contrôles ux_snapshot du 2026-11-05", "Search Console, 3 derniers mois"],
+  "perimetre": "Page d'accueil, desktop 1440 px et mobile iPhone 13. Non vérifié : parcours de réservation, données analytics.",
+  "verdict": "Une phrase : l'état général et la priorité n° 1.",
+  "captures": [
+    {"titre": "Desktop", "fichier": "../data/clean/ux/2026-11-05/exemple.com/desktop_ecran.png", "legende": "premier écran"},
+    {"titre": "Mobile", "fichier": "../data/clean/ux/2026-11-05/exemple.com/mobile_ecran.png", "legende": "premier écran"}
+  ],
+  "tableau": {
+    "titre": "Mesures (optionnel)",
+    "colonnes": ["Contrôle", "Desktop", "Mobile"],
+    "lignes": [["Débordement horizontal", "0 px", "0 px"]]
+  },
+  "points_forts": [
+    {"titre": "Proposition de valeur claire", "detail": "Ce qui est bien et pourquoi.", "preuve": "Ce qui le montre.", "statut": "Observé", "capture": "../data/clean/ux/2026-11-05/exemple.com/desktop_ecran.png"}
+  ],
+  "problemes": [
+    {"titre": "CTA principal invisible sur mobile", "detail": "Le problème et sa conséquence pour le visiteur.", "preuve": "Capture mobile : bouton sous la ligne de flottaison.", "statut": "Observé", "priorite": "haute", "impact": "fort", "effort": "faible", "risque_seo": "aucun", "recommandation": "Modification précise à faire.", "capture": "../data/clean/ux/2026-11-05/exemple.com/mobile_ecran.png"}
+  ],
+  "limites": ["Ce qui n'a pas pu être vérifié et pourquoi."],
+  "prochaines_etapes": ["Action suivante, et date de revérification."]
+}

@@ -65,6 +65,7 @@ Livrable : thème, page, type (création / mise à jour), mois de pic, date de p
 - Mesurer les clics affiliés comme conversions (événements analytics) ; revenus analysés seulement si fournis.
 
 ## 7. Contrôle avant publication (en plus de la checklist de `redaction-seo`)
+Pour l'audit d'une page ou d'un site existant, rendre un compte rendu en deux parties : **✅ ce qui va bien** et **❌ problèmes à régler** (triés par priorité, chacun avec preuve et correction), précédées d'un verdict et suivies des limites ; captures desktop et mobile quand l'outil le permet.
 - [ ] La page apporte une valeur propre (test, données, expérience, comparaison) — pas une reprise du marchand ni une page de série.
 - [ ] Mention de transparence visible avant le premier lien affilié ; liens en `rel="sponsored"`.
 - [ ] Ce qui a été testé et ce qui ne l'a pas été est dit clairement.
@@ -75,4 +76,4 @@ Livrable : thème, page, type (création / mise à jour), mois de pic, date de p
 Sources de référence : Google Search Central (politiques anti-spam ; qualifier les liens sortants ; rédiger des avis de qualité ; fonctionnalités IA et votre site web) ; Légifrance (LCEN art. 20 ; loi n° 2023-451 ; ordonnance n° 2024-978).
 
 ## 8. Outils dans le terminal (Claude Code)
-Pour la saisonnalité (§ 5) : `kp_clean.py` (skill `seo-strategie`) calcule le mois de pic et un indice de saisonnalité à partir d'un export Keyword Planner avec volumes mensuels ; `gsc_analyze.py` compare deux périodes de Search Console. Livrable du calendrier dans `deliverables/`.
+Pour la saisonnalité (§ 5) : `kp_clean.py` (skill `seo-strategie`) calcule le mois de pic et un indice de saisonnalité à partir d'un export Keyword Planner avec volumes mensuels ; `gsc_analyze.py` compare deux périodes de Search Console. Livrable du calendrier dans `deliverables/`. Compte rendu HTML : `templates/compte-rendu.json` → `rapport.py` (skill `seo-strategie`).

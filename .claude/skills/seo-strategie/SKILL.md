@@ -84,6 +84,7 @@ Ordre : indexation et exploration (codes HTTP, redirections, robots.txt, noindex
 - Chaque problème : preuve, URL d'exemple, nombre d'URL touchées, impact, confiance, effort, risque, recommandation. Séparer confirmé et à vérifier.
 - Un sitemap ne prouve pas l'indexation ; un score Lighthouse ne prouve pas un problème utilisateur.
 - Core Web Vitals « bons » au 75e centile des données terrain : LCP ≤ 2,5 s, INP ≤ 200 ms, CLS ≤ 0,1.
+- Rendu JavaScript : comparer le HTML servi (sans JavaScript) et la page rendue : texte, Hn, liens internes, title, canonical, meta robots. Une meta robots ou une canonical modifiée par JavaScript est un problème prioritaire ; un contenu principal absent sans JavaScript est un risque d'indexation lente ou partielle. Confirmer avec l'inspection d'URL de Search Console (« Tester l'URL en direct »).
 - Rapport d'indexation GSC : « Explorée, non indexée » = souvent qualité ou doublon ; « Détectée, non indexée » = souvent priorité de crawl, vérifier le maillage.
 - Données structurées : uniquement des types correspondant au contenu visible, testées ; résultats enrichis FAQ réservés depuis 2023 aux sites gouvernementaux et de santé, HowTo plus affiché ; revérifier la documentation Google en vigueur.
 - Spécificités : local (catégorie principale GBP, nom réel sans mots-clés, NAP identique partout, pages villes seulement si contenu distinct) ; e-commerce (facettes indexées seulement si demande + produits + utilité propre) ; international (hreflang réciproque, codes valides comme en-GB, x-default, vers des URL canoniques en 200).
@@ -92,7 +93,17 @@ Ordre : indexation et exploration (codes HTTP, redirections, robots.txt, noindex
 Score indicatif : (impact × confiance) / effort, notés 1 à 3, ajusté par le risque et les dépendances. Trois groupes : bloquants, gains rapides, chantiers stratégiques.
 Plan d'action : action, catégorie, URL ou périmètre, problème, preuve, impact, confiance, effort, risque, risque SEO, priorité, responsable, indicateur de succès, statut. En tête : résumé de 5 à 10 lignes (situation, 3 priorités, ce qui manque).
 
-## 12. Outils dans le terminal (Claude Code)
+## 12. Compte rendu (tout audit ou vérification)
+Toute demande d'audit, d'analyse ou de vérification se termine par un compte rendu : audit complet (site, page) ou point précis (rendu JavaScript, balises, indexation, maillage, formulaire, vitesse…), **même si tout va bien**. Structure fixe :
+1. **En-tête** : type de compte rendu, page(s), date, mode, sources, périmètre (ce qui a été vérifié et ce qui ne l'a pas été).
+2. **Verdict** en une ou deux phrases : état général et priorité n° 1.
+3. **Preuves visuelles** dès qu'une page est concernée : capture **desktop** et capture **mobile** ; pour le rendu JavaScript, capture **sans JavaScript** et capture **après JavaScript**. Les joindre que le problème soit confirmé ou non : elles prouvent aussi que tout va bien.
+4. **✅ Ce qui va bien** : chaque point vérifié et conforme, avec sa preuve. Un contrôle réussi est un résultat : ne jamais laisser cette partie vide par omission.
+5. **❌ Problèmes à régler** : triés par priorité (haute, moyenne, basse) ; pour chacun : constat, preuve, statut ([Mesuré], [Observé], [Hypothèse]), impact, effort, risque SEO, recommandation précise.
+6. **Limites et prochaines étapes** : ce qui n'a pas pu être vérifié et comment le vérifier.
+Un point non vérifié ne va ni dans ✅ ni dans ❌ : il va dans les limites. Sans outil de capture, le dire dans les limites et demander à l'utilisateur ses captures desktop et mobile. Si l'utilisateur veut garder ou partager le compte rendu, proposer d'en faire un document.
+
+## 13. Outils dans le terminal (Claude Code)
 Quand Claude Code est lancé depuis la racine du pack, utiliser ces scripts plutôt que calculer à la main. Commande `py` sous Windows, `python3` ailleurs ; `--help` affiche les options. Exports bruts dans `data/raw/` (jamais modifiés), sorties dans `data/clean/`, livrables dans `deliverables/` nommés `AAAA-MM-JJ_projet_type.ext`.
 
 | Besoin | Commande | Sorties |
@@ -100,6 +111,10 @@ Quand Claude Code est lancé depuis la racine du pack, utiliser ces scripts plut
 | Nettoyer un export Keyword Planner (FR/EN, UTF-16) | `py .claude/skills/seo-strategie/scripts/kp_clean.py data/raw/<export>.csv -o data/clean/kp_clean.csv --country FR --language fr` | CSV normalisé : fourchettes, quasi-doublons, mois de pic, indice de saisonnalité |
 | Clustering par SERP (§ 5) | `py .claude/skills/seo-strategie/scripts/serp_cluster.py data/raw/<serp>.csv --volumes data/clean/kp_clean.csv --threshold 3 -o data/clean/clusters` | `clusters.csv`, `clusters_resume.csv`, `cas_limites.csv` |
 | Analyse Search Console (§ 6 et 9) | `py .claude/skills/seo-strategie/scripts/gsc_analyze.py data/raw/<gsc>.csv [--previous data/raw/<avant>.csv] -o data/clean/gsc` | `synthese.txt`, `gains_rapides_position.csv`, `ctr_faible.csv`, `cannibalisation.csv`, `pages.csv`, `evolution_pages.csv` |
+| Captures desktop/mobile, rendu JavaScript (§ 10, § 12) | `py .claude/skills/ux-cro/scripts/ux_snapshot.py <url> -o data/clean/ux/AAAA-MM-JJ --js` (Playwright) | captures `desktop_ecran.png`, `mobile_ecran.png`, `desktop_sans_js.png`, `rapport.md`, `rapport.json` |
+| Compte rendu HTML (§ 12) | `py .claude/skills/seo-strategie/scripts/rapport.py deliverables/<fichier>.json` | page HTML avec captures, ✅ / ❌ |
 | Maillage et cocon (§ 7 et 8) | `py .claude/skills/seo-strategie/scripts/link_graph.py --links data/raw/<inlinks>.csv [--cocon deliverables/<cocon-map>.csv] --home https://exemple.com/ -o data/clean/cocon-audit` | `pages.csv` (liens entrants, profondeur, orphelines), `ancres_repetees.csv`, `liens_manquants.csv`, `liens_sortants_hors_cocon.csv` |
 
-Lire `synthese.txt` (quand il existe) avant les CSV. Modèles de livrables dans `templates/` : `project-brief.md`, `keyword-research.csv`, `semantic-expansion.csv`, `keyword-map.csv`, `cocon-map.csv`, `internal-links.csv`, `seo-audit.md`, `action-plan.csv`.
+Lire `synthese.txt` (quand il existe) avant les CSV. Modèles de livrables dans `templates/` : `project-brief.md`, `keyword-research.csv`, `semantic-expansion.csv`, `keyword-map.csv`, `cocon-map.csv`, `internal-links.csv`, `compte-rendu.json`, `action-plan.csv`.
+
+**Compte rendu (terminal)** : copier `templates/compte-rendu.json` dans `deliverables/AAAA-MM-JJ_<projet>_<type>.json`, le remplir (captures = chemins des PNG produits par `ux_snapshot.py`, relatifs au dossier du JSON), puis lancer `py .claude/skills/seo-strategie/scripts/rapport.py deliverables/<fichier>.json` → page HTML autonome, captures intégrées. Donner à l'utilisateur le chemin du HTML (il s'ouvre d'un double-clic) et un résumé de 3 lignes : verdict, nombre de points OK, problèmes prioritaires.
