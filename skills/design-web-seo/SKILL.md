@@ -107,7 +107,7 @@ Le « goût » vient de la retenue et de la cohérence, pas des effets.
 **Performance**
 - Objectif terrain au 75e centile : LCP ≤ 2,5 s, INP ≤ 200 ms, CLS ≤ 0,1. Une mesure de laboratoire est indicative et présentée comme telle.
 - Espace réservé pour tout ce qui arrive tard : images, vidéos, cartes, widgets d'affiliation ou de réservation, publicités, bannière cookies (en surimpression, sans décaler la page).
-- Animer uniquement `transform` et `opacity`. Pas de bibliothèque d'animation, de WebGL ni de framework lourd hors type Tech. Pas d'iframe de carte au chargement : image statique ou façade cliquable.
+- Animer uniquement `transform`, `opacity` et les couleurs (comme dans `references/systeme-visuel.md`). Pas de bibliothèque d'animation, de WebGL ni de framework lourd hors type Tech. Pas d'iframe de carte au chargement : image statique ou façade cliquable.
 - Polices **auto-hébergées** en woff2 (Google Fonts chargé depuis les serveurs de Google pose un problème RGPD) ; 4 fichiers au plus ; `font-display: swap` ; préchargement de 1 ou 2 fichiers ; police de repli ajustée (`size-adjust`) pour limiter le décalage.
 
 **Mobile et accessibilité**
@@ -133,7 +133,7 @@ Ce sont des contrôles de fabrication, pas un audit. Utiliser les outils disponi
 - **Stabilité et vitesse** : CLS et LCP mesurés en laboratoire [Mesuré, laboratoire], poids total, nombre de polices.
 - **Accessibilité** : contrastes, parcours clavier, focus, mouvement réduit.
 - **Refonte** : relevé après modification comparé au relevé du § 3.1 ; toute différence est justifiée ou corrigée.
-Statuts des constats : [Mesuré], [Observé], [Hypothèse]. Ne jamais écrire « vérifié » pour ce qui ne l'a pas été.
+Statuts des constats : [Mesuré], [Observé], [Estimé], [Déduit], [Hypothèse]. Ne jamais écrire « vérifié » pour ce qui ne l'a pas été.
 
 ## 8. Livraison
 
