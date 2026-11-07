@@ -79,6 +79,8 @@ Les valeurs de ce fichier sont les réglages par défaut de `assets/base.css`. U
 - Survol réservé aux pointeurs fins (`@media (hover: hover)`) ; tout ce qui réagit au survol marche aussi au clic et au clavier.
 - Animer seulement `transform`, `opacity` et les couleurs ; jamais `height`, `padding`, `top` ni la mise en page.
 - `prefers-reduced-motion: reduce` : toutes les transitions à ~0, rien de caché.
+- **Animations au défilement** : permises sous les conditions du § 5.1 de la skill (rien de caché sans JavaScript, pas de décalage, pas de retard du LCP, mesure sans dégradation). Valeurs de départ : apparition = `opacity` 0 → 1 et `translateY(12px)` → 0, 500-600 ms, courbe ci-dessus, déclenchée une fois à 15 % de visibilité ; image qui s'agrandit = `transform: scale()` de 1 à 1,15 au plus, sur un cadre à `overflow: hidden` et à taille réservée.
+  Principe d'implémentation, à tester avant livraison : un script court teste `IntersectionObserver` et `prefers-reduced-motion`, puis pose `js-reveal` sur `<html>`. Le CSS n'atténue (`opacity: 0`) que sous `.js-reveal .reveal`, et l'observateur ajoute `.is-in` à l'entrée dans l'écran. Sans script, sans `IntersectionObserver` ou avec mouvement réduit, la classe n'est jamais posée et tout reste visible. Ne jamais mettre `.reveal` dans le premier écran.
 - Type Tech seulement : une boucle discrète dans une illustration d'interface (2,5 à 4 s par cycle), un effet de fond dans le premier écran avec image de repli ; tout ce qui bouge plus de 5 s a un bouton pause.
 
 ## 6. Premier écran

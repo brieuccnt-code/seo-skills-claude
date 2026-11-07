@@ -53,7 +53,7 @@ Page indexable ou non · textes fournis ou à produire · identité existante (l
 ### 3.3 Type de page : il décide de tout
 | Type | Exemples | Ce qui mène | Exclu |
 |---|---|---|---|
-| **Éditorial** | Article, guide, comparatif, page de destination voyage | La lecture : une colonne, sommaire si long, photos originales, auteur et date de mise à jour visibles | Toute animation hors survol, effet de fond, découpage « un écran par section » |
+| **Éditorial** | Article, guide, comparatif, page de destination voyage | La lecture : une colonne, sommaire si long, photos originales, auteur et date de mise à jour visibles | Effet de fond, découpage « un écran par section », toute animation qui gêne la lecture |
 | **Lieu** | Hôtel, gîte, restaurant, commerce, agence locale | Les photos réelles du lieu, l'adresse complète, les horaires, l'action (réserver, itinéraire) | Effets, fonds animés, mode sombre décoratif |
 | **Service** | Cabinet, artisan, agence, consultant | Les réalisations, les personnes, le déroulé, le contact | Effets, illustrations génériques |
 | **Produit** | Objet, marque, boutique | Le produit en grand, une vue différente par section | Effets ; 3D seulement pour montrer le produit, avec image fixe de repli |
@@ -80,10 +80,21 @@ Le « goût » vient de la retenue et de la cohérence, pas des effets.
 - **Mise en page** : bords gauche et droit alignés sur la même grille, rien qui déborde d'un côté ; une idée par section ; respiration régulière entre sections ; pas de bloc dans un bloc dans un bloc.
 - **Photos** : réelles, du client, en priorité. Une photo de banque d'images n'est jamais présentée comme le lieu, l'équipe ou le produit du client. Pas de texte incrusté dans une image. Légende seulement si `redaction-seo` la fournit, jamais « image d'illustration ».
 - **Icônes** : un seul jeu, cohérent ; les logos de marques réelles dans leurs couleurs d'origine, jamais redessinés.
-- **Mouvement** : réponses au survol, au clic et au focus uniquement (carte qui monte de 2 px, photo à 1,02-1,03 dans son cadre, soulignement qui se trace, bouton qui s'enfonce au clic). Durées et courbes : `references/systeme-visuel.md`.
-- **Interdits visuels** : apparitions au scroll, fondus d'entrée, parallaxe, inclinaison 3D, carrousels automatiques, compteurs animés, textes qui défilent, curseur personnalisé, écran de chargement, pop-up ou fenêtre modale à l'arrivée, éléments collants autres que l'en-tête et la barre d'action mobile.
+- **Mouvement** : réponses au survol, au clic et au focus (carte qui monte de 2 px, photo à 1,02-1,03 dans son cadre, soulignement qui se trace, bouton qui s'enfonce au clic), et animations au défilement **sous les conditions du § 5.1**. Durées et courbes : `references/systeme-visuel.md`.
+- **Interdits visuels** : fondus d'entrée au chargement de la page, inclinaison 3D, carrousels automatiques, compteurs animés, textes qui défilent, curseur personnalisé, écran de chargement, pop-up ou fenêtre modale à l'arrivée, détournement du défilement (la molette ou le toucher doivent toujours faire défiler la page normalement).
 - **Effets** (fond animé, WebGL, 3D) : type Tech uniquement, un seul par page, dans le premier écran, derrière le texte et jamais porteur de texte, avec une image fixe de repli sur mobile et en `prefers-reduced-motion`.
 - **Preuves** : aucun faux avis, faux logo client, faux chiffre, fausse urgence ni compteur artificiel. Sans preuve réelle, des faits du brief ou rien.
+
+### 5.1 Animations au défilement : autorisées tant qu'elles ne nuisent pas au SEO
+Apparitions au scroll, image qui s'agrandit, parallaxe légère, bloc collant le temps d'un effet : le client peut les vouloir et c'est permis. Le critère n'est pas le goût, c'est l'effet sur le référencement et la vitesse. Elles passent si **toutes** ces conditions sont vraies :
+1. **Rien de caché sans JavaScript.** Le texte, les Hn, les liens et les images sont visibles dans le HTML servi, sans JavaScript et sans animation. L'état de départ d'un effet (par exemple `opacity: 0` pour une apparition) n'est jamais écrit en CSS seul : c'est le JavaScript qui pose la classe qui l'active, de sorte qu'un robot, une panne de script, l'impression ou un lecteur d'écran voient tout. Pas d'état de départ atténué dans le premier écran, ni en `display: none` ou `visibility: hidden`. Variante sans JavaScript : CSS `animation-timeline` avec repli visible.
+2. **Pas de décalage de mise en page.** Seulement `transform`, `opacity` et les couleurs ; jamais `height`, `width`, `top`, `margin` ni `padding`. Espace réservé pour tout bloc qui bouge : CLS ≤ 0,1.
+3. **Pas de retard sur l'image principale.** Aucun fondu ni masque sur l'image du premier écran (élément LCP) au chargement : elle s'affiche immédiatement, l'effet démarre seulement quand l'utilisateur fait défiler.
+4. **Léger.** CSS pur, ou `IntersectionObserver` (quelques lignes de JavaScript). Pas de bibliothèque d'animation ni de framework lourd hors type Tech. Aucun calcul à chaque événement de défilement sans `requestAnimationFrame` ou écouteur passif.
+5. **Accessible.** `prefers-reduced-motion: reduce` coupe tout mouvement et laisse tout visible. Les éléments collants ne masquent aucun contenu, à aucune largeur d'écran.
+6. **Mesuré.** Avant et après l'effet : CLS et LCP de laboratoire (`ux_snapshot.py`, indicatifs), poids du JavaScript ajouté, rendu sans JavaScript (`--js`) ; données terrain (Search Console, PageSpeed Insights) quand elles existent. Seuils : LCP ≤ 2,5 s, INP ≤ 200 ms, CLS ≤ 0,1.
+
+**Décision.** Si une condition n'est pas remplie, ou si la mesure montre que l'effet dégrade le LCP, le CLS ou l'INP, rend le contenu inaccessible sans JavaScript ou alourdit sensiblement la page : corriger, sinon simplifier ou retirer l'effet (le SEO l'emporte, § 2). Sinon, on le garde. Sans mesure possible, le dire et laisser l'effet en `[Hypothèse]` à vérifier plutôt que de le déclarer sans risque.
 
 ## 6. Contraintes SEO intégrées au design (non négociables sur une page indexable)
 
@@ -152,7 +163,7 @@ Statuts des constats : [Mesuré], [Observé], [Estimé], [Déduit], [Hypothèse]
 2. Ne jamais modifier URL, canonical, robots, redirections ou données structurées sans validation (`seo-strategie`).
 3. Un seul H1 ; les Hn suivent le texte ; aucun titre décoratif.
 4. Le contenu essentiel est dans le HTML servi, sans JavaScript.
-5. Aucune animation déclenchée par le scroll, aucune entrée animée, aucun pop-up à l'arrivée.
+5. Animations au défilement autorisées seulement si elles passent les conditions du § 5.1 (rien de caché sans JavaScript, pas de décalage, pas de retard du LCP, mesure sans dégradation) ; aucun fondu d'entrée au chargement, aucun pop-up à l'arrivée.
 6. Effets réservés au type Tech, un seul par page, avec repli fixe.
 7. Polices auto-hébergées ; images aux repères du § 6.
 8. Rien d'inventé : ni texte, ni coordonnée, ni avis, ni chiffre, ni logo client.
